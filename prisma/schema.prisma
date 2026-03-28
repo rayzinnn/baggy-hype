@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  products Product[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Decimal
+  images      String   // JSON string of image URLs
+  sizes       String   // JSON string of sizes ["P", "M", "G", "GG"]
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  isFeatured  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Order {
+  id              String   @id @default(cuid())
+  shortId         String   @unique // Ex: 0001, 0002
+  customerName    String?
+  customerPhone   String?
+  items           String   // JSON summary: [{ productId, name, size, price, quantity }]
+  total           Decimal
+  status          String   @default("PENDING")
+  createdAt       DateTime @default(now())
+}
+
+model AdminUser {
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
+}
+
+model SiteConfig {
+  id               String @id @default("singleton")
+  topBannerText    String @default("🔥 FRETE GRÁTIS PARA PALMAS - TO | ENTREGA HOJE 🏁")
+  isBannerVisible  Boolean @default(true)
+  whatsappNumber   String @default("5563999999999")
+  heroImage1       String @default("/post01.jpg")
+  heroImage2       String @default("/post01.jpg")
+  heroImage3       String @default("/post01.jpg")
+  updatedAt        DateTime @updatedAt
+}
