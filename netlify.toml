@@ -1,0 +1,8 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Keep Netlify's build Node consistent. Native deps like better-sqlite3 are sensitive to Node ABI.
+  NODE_VERSION = "20"
+
