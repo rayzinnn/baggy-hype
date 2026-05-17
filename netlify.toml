@@ -5,4 +5,5 @@
 [build.environment]
   # Keep Netlify's build Node consistent. Native deps like better-sqlite3 are sensitive to Node ABI.
   NODE_VERSION = "20"
-
+  NPM_FLAGS = "--legacy-peer-deps"
+  NPM_CONFIG_LEGACY_PEER_DEPS = "true"
