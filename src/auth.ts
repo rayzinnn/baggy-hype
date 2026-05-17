@@ -1,11 +1,15 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { prisma } from "@/lib/prisma";
-import bcrypt from "bcryptjs";
 import { authConfig } from "./auth.config";
+
+const fallbackAdminEmail = "admin@baggyhype.club";
+const fallbackAdminPassword = "baggy2026";
+const fallbackAuthSecret = "BaggyHype2026SecretKeyForAuth";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
+  secret: process.env.AUTH_SECRET || fallbackAuthSecret,
+  trustHost: true,
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -13,15 +17,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const email = credentials.email as string;
         const password = credentials.password as string;
+        const adminEmail = process.env.ADMIN_EMAIL || fallbackAdminEmail;
+        const adminPassword = process.env.ADMIN_PASSWORD || fallbackAdminPassword;
 
-        // Bypass para credenciais padrão em ambiente local
-        if (email === "admin@baggyhype.club" && password === "baggy2026") {
+        // Temporary fallback for the hosted admin while Netlify env vars are being configured.
+        if (email === adminEmail && password === adminPassword) {
           return {
             id: "admin-default",
-            email: "admin@baggyhype.club",
+            email: adminEmail,
             name: "Admin Baggy",
           };
         }
+
+        const [{ prisma }, bcrypt] = await Promise.all([
+          import("@/lib/prisma"),
+          import("bcryptjs"),
+        ]);
 
         const user = await prisma.adminUser.findUnique({
           where: { email },
@@ -29,7 +40,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (!user) return null;
 
-        const isPasswordCorrect = await bcrypt.compare(
+        const isPasswordCorrect = await bcrypt.default.compare(
           password,
           user.password
         );
