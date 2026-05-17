@@ -1,7 +1,5 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { prisma } from "@/lib/prisma";
-import bcrypt from "bcryptjs";
 import { authConfig } from "./auth.config";
 
 const fallbackAdminEmail = "admin@baggyhype.club";
@@ -11,6 +9,7 @@ const fallbackAuthSecret = "BaggyHype2026SecretKeyForAuth";
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
   secret: process.env.AUTH_SECRET || fallbackAuthSecret,
+  trustHost: true,
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -30,13 +29,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           };
         }
 
+        const [{ prisma }, bcrypt] = await Promise.all([
+          import("@/lib/prisma"),
+          import("bcryptjs"),
+        ]);
+
         const user = await prisma.adminUser.findUnique({
           where: { email },
         });
 
         if (!user) return null;
 
-        const isPasswordCorrect = await bcrypt.compare(
+        const isPasswordCorrect = await bcrypt.default.compare(
           password,
           user.password
         );
