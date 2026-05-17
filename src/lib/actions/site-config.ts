@@ -1,12 +1,11 @@
 "use server";
 
-import { auth } from "@/auth";
+import { requireAdminSession } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
 export async function updateSiteConfig(formData: FormData) {
-  const session = await auth();
-  if (!session?.user) return;
+  if (!(await requireAdminSession())) return;
 
   const topBannerText = String(formData.get("topBannerText") || "").trim();
   const whatsappNumber = String(formData.get("whatsappNumber") || "").replace(/\D/g, "");

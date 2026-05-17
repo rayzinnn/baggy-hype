@@ -1,16 +1,11 @@
 "use server";
 
-import { auth } from "@/auth";
+import { requireAdminSession } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-async function requireAdmin() {
-  const session = await auth();
-  return Boolean(session?.user);
-}
-
 export async function createCategory(formData: FormData) {
-  if (!(await requireAdmin())) return;
+  if (!(await requireAdminSession())) return;
 
   const name = String(formData.get("name") || "").trim();
   const parentId = String(formData.get("parentId") || "").trim() || null;
@@ -24,7 +19,7 @@ export async function createCategory(formData: FormData) {
 }
 
 export async function deleteCategory(categoryId: string) {
-  if (!(await requireAdmin())) return;
+  if (!(await requireAdminSession())) return;
 
   await prisma.category.delete({ where: { id: categoryId } });
   revalidatePath("/admin/categories");

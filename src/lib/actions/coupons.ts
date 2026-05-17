@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/auth";
+import { requireAdminSession } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
@@ -22,13 +22,8 @@ function date(value: FormDataEntryValue | null, end = false) {
   return raw ? new Date(`${raw}T${end ? "23:59:59.999" : "00:00:00"}`) : null;
 }
 
-async function requireAdmin() {
-  const session = await auth();
-  return Boolean(session?.user);
-}
-
 export async function createCoupon(formData: FormData) {
-  if (!(await requireAdmin())) return;
+  if (!(await requireAdminSession())) return;
 
   const code = String(formData.get("code") || "").trim().toUpperCase();
   const discountType = String(formData.get("discountType") || "PERCENT");
@@ -60,7 +55,7 @@ export async function createCoupon(formData: FormData) {
 }
 
 export async function deleteCoupon(couponId: string) {
-  if (!(await requireAdmin())) return;
+  if (!(await requireAdminSession())) return;
 
   await prisma.coupon.delete({ where: { id: couponId } });
   revalidatePath("/admin/coupons");

@@ -14,7 +14,6 @@ import {
   Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { signOut } from "next-auth/react";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -22,6 +21,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isLoginPage = pathname === "/admin/login";
 
   if (isLoginPage) return <>{children}</>;
+
+  const handleLogout = async () => {
+    await fetch("/api/admin/login", { method: "DELETE" });
+    window.location.href = "/";
+  };
 
   const menuItems = [
     { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -69,7 +73,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             Ir para o Site
           </Link>
           <button
-            onClick={() => signOut({ callbackUrl: "/" })}
+            onClick={handleLogout}
             className="flex items-center gap-3 px-4 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest text-red-500/60 hover:text-red-500 hover:bg-red-500/10 transition-all"
           >
             <LogOut size={18} />

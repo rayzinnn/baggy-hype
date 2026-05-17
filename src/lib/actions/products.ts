@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/auth";
+import { requireAdminSession } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -39,8 +39,7 @@ function slugify(value: string) {
 }
 
 async function requireAdmin() {
-  const session = await auth();
-  return Boolean(session?.user);
+  return requireAdminSession();
 }
 
 function parseVariants(value: string) {

@@ -1,4 +1,3 @@
-import { auth } from "@/auth";
 import { DateRangeFilter } from "@/components/admin/DateRangeFilter";
 import { dayKey, parseLocalDateRange } from "@/lib/date-range";
 import { prisma } from "@/lib/prisma";
@@ -17,7 +16,6 @@ function formatCurrency(value: number) {
 }
 
 export default async function DashboardPage({ searchParams }: { searchParams: Promise<DashboardSearchParams> }) {
-  await auth();
   const params = await searchParams;
   const metric = params.metric || "revenue";
   const range = parseLocalDateRange(params.from, params.to, 30);

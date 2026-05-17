@@ -1,14 +1,13 @@
 "use server";
 
-import { auth } from "@/auth";
+import { requireAdminSession } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
 const VALID_STATUSES = new Set(["PENDING", "CONTACTED", "PAID", "DELIVERED", "CANCELED"]);
 
 export async function updateOrderStatus(orderId: string, formData: FormData) {
-  const session = await auth();
-  if (!session?.user) return;
+  if (!(await requireAdminSession())) return;
 
   const status = String(formData.get("status") || "");
   if (!VALID_STATUSES.has(status)) return;
@@ -23,8 +22,7 @@ export async function updateOrderStatus(orderId: string, formData: FormData) {
 }
 
 export async function deleteOrder(orderId: string) {
-  const session = await auth();
-  if (!session?.user) return;
+  if (!(await requireAdminSession())) return;
 
   await prisma.order.delete({
     where: { id: orderId },

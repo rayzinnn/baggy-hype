@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Lock, Mail } from "lucide-react";
 
@@ -18,16 +17,17 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (result?.error) {
+      if (!response.ok) {
         setError("Credenciais invalidas. Tente novamente.");
       } else {
         router.push("/admin/dashboard");
+        router.refresh();
       }
     } catch {
       setError("Ocorreu um erro. Tente novamente.");
