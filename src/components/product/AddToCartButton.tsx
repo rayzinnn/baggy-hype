@@ -11,31 +11,70 @@ interface AddToCartButtonProps {
         price: number;
         images: string;
         sizes: string;
+        variants?: {
+            id: string;
+            color: string;
+            size: string;
+            stock: number;
+            price: number | null;
+            promoPrice: number | null;
+            media: string;
+        }[];
     }
 }
 
 export default function AddToCartButton({ product }: AddToCartButtonProps) {
     const { addItem } = useCart();
-    const [selectedSize, setSelectedSize] = useState<string>("");
+    const variants = product.variants || [];
+    const [selectedVariantId, setSelectedVariantId] = useState<string>(variants[0]?.id || "");
+    const [selectedSize, setSelectedSize] = useState("");
     const [isAdded, setIsAdded] = useState(false);
 
-    const sizes = JSON.parse(product.sizes);
-    const images = JSON.parse(product.images);
+    const sizes = parseJsonList(product.sizes, []);
+    const images = parseJsonList(product.images, ["/post01.jpg"]);
+    const hasLegacySizeList = sizes.length > 0 && variants.length === 1 && variants[0]?.color === "Unica" && variants[0]?.size === "Unico";
+    const selectableVariants = hasLegacySizeList ? [] : variants;
+    const selectedVariant = selectableVariants.find((variant) => variant.id === selectedVariantId);
 
     const handleAdd = () => {
-        if (!selectedSize && sizes.length > 0) {
+        if (selectableVariants.length > 0 && !selectedVariant) {
+            alert("Por favor, selecione uma variante.");
+            return;
+        }
+
+        if (selectedVariant && selectedVariant.stock <= 0) {
+            alert("Essa variante esta sem estoque.");
+            return;
+        }
+
+        if (!selectedVariant && sizes.length > 0 && !selectedSize) {
             alert("Por favor, selecione um tamanho.");
             return;
         }
 
+        const variantImages = selectedVariant ? parseJsonList(selectedVariant.media, images) : images;
+        const price = selectedVariant?.promoPrice || selectedVariant?.price || product.price;
+
         addItem({
             id: product.id,
+            variantId: selectedVariant?.id,
             name: product.name,
-            price: product.price,
-            image: images[0] || "/post01.jpg",
+            price,
+            image: variantImages[0] || images[0] || "/post01.jpg",
             quantity: 1,
-            size: selectedSize
+            color: selectedVariant?.color,
+            size: selectedVariant?.size || selectedSize || "",
         });
+
+        fetch("/api/analytics", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                eventType: "CART_ADD",
+                productId: product.id,
+                metadata: { size: selectedVariant?.size || selectedSize, color: selectedVariant?.color },
+            }),
+        }).catch(() => {});
 
         setIsAdded(true);
         setTimeout(() => setIsAdded(false), 3000);
@@ -50,14 +89,29 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
                   <span className="text-primary tracking-widest italic">Stock: Palmas - TO</span>
                </div>
                <div className="flex flex-wrap gap-2 text-center items-center justify-start">
-                  {sizes.length > 0 ? (
-                      sizes.map((size: string) => (
+                  {selectableVariants.length > 0 ? (
+                      selectableVariants.map((variant) => (
                         <button 
+                            key={variant.id}
+                            onClick={() => setSelectedVariantId(variant.id)}
+                            className={`min-w-20 h-14 px-3 flex flex-col items-center justify-center border font-black text-[9px] uppercase tracking-widest transition-all ${
+                                selectedVariantId === variant.id 
+                                ? "bg-primary border-primary text-black" 
+                                : "bg-transparent border-white/10 text-white/40 hover:border-white/40 hover:text-white"
+                            }`}
+                        >
+                            <span>{variant.color}</span>
+                            <span>{variant.size} | {variant.stock}</span>
+                        </button>
+                      ))
+                  ) : sizes.length > 0 ? (
+                      sizes.map((size: string) => (
+                        <button
                             key={size}
                             onClick={() => setSelectedSize(size)}
                             className={`w-12 h-12 md:w-16 md:h-16 flex items-center justify-center border font-black text-xs md:text-sm uppercase tracking-widest transition-all ${
-                                selectedSize === size 
-                                ? "bg-primary border-primary text-black" 
+                                selectedSize === size
+                                ? "bg-primary text-black border-primary"
                                 : "bg-transparent border-white/10 text-white/40 hover:border-white/40 hover:text-white"
                             }`}
                         >
@@ -91,4 +145,13 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
             </button>
         </div>
     );
+}
+
+function parseJsonList(value: string, fallback: string[]) {
+    try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed.filter((item) => typeof item === "string") : fallback;
+    } catch {
+        return fallback;
+    }
 }

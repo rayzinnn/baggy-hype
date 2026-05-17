@@ -1,10 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #ff5a1f; /* Palmas Sunset */
+  --color-primary: #f7d117;
   --color-brand: #ffffff;
-  --color-surface: #121212;
+  --color-surface: var(--surface);
   --color-muted: #888888;
+  --color-black: var(--background);
+  --color-white: var(--foreground);
   
   /* Hype Borders */
   --radius-xl: 1rem;
@@ -13,6 +15,15 @@
 :root {
   --background: #000000;
   --foreground: #ffffff;
+  --surface: #121212;
+  color-scheme: dark;
+}
+
+:root.light {
+  --background: #f5f2e8;
+  --foreground: #111111;
+  --surface: #ffffff;
+  color-scheme: light;
 }
 
 body {
@@ -38,7 +49,7 @@ body {
 
 /* Utilitários Extras */
 .neon-glow {
-  box-shadow: 0 0 15px rgba(255, 90, 31, 0.4);
+  box-shadow: 0 0 15px rgba(247, 209, 23, 0.36);
 }
 
 @keyframes infinite-scroll {

@@ -1,147 +1,217 @@
-import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import Image from "next/image";
-import Link from "next/link";
-import { 
-  ArrowLeft, 
-  Truck, 
-  MapPin, 
-  Smartphone,
-  Info
-} from "lucide-react";
-import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { Navbar } from "@/components/layout/Navbar";
 import AddToCartButton from "@/components/product/AddToCartButton";
+import { ProductCard } from "@/components/product/ProductCard";
+import { ProductGallery } from "@/components/product/ProductGallery";
+import { prisma } from "@/lib/prisma";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft, BadgeCheck, CreditCard, Info, MapPin, Ruler, Smartphone, Star, Truck } from "lucide-react";
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
-  const product = await prisma.product.findUnique({
-    where: { id: params.id },
-    include: { category: true }
+type ProductPageProps = {
+  params: Promise<{ id: string }>;
+};
+
+function parseJsonList(value: string, fallback: string[]) {
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed.filter((item) => typeof item === "string") : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function money(value: { toString: () => string }) {
+  return Number(value).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+async function getProduct(slugOrId: string) {
+  return prisma.product.findFirst({
+    where: { OR: [{ id: slugOrId }, { slug: slugOrId }] },
+    include: {
+      category: true,
+      variants: { where: { isActive: true }, orderBy: [{ color: "asc" }, { size: "asc" }] },
+    },
   });
+}
 
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const product = await getProduct(id);
+  if (!product) return { title: "Produto nao encontrado | Baggy Hype" };
+
+  return {
+    title: product.seoTitle || `${product.name} | Baggy Hype`,
+    description: product.seoDescription || product.description || "Streetwear oversized em Palmas - TO com checkout via WhatsApp.",
+    openGraph: {
+      title: product.name,
+      description: product.description || "Drop Baggy Hype disponivel em Palmas - TO.",
+      images: parseJsonList(product.images, ["/post01.jpg"]).slice(0, 1),
+    },
+  };
+}
+
+export const dynamic = "force-dynamic";
+
+export default async function ProductPage({ params }: ProductPageProps) {
+  const { id } = await params;
+  const product = await getProduct(id);
   const config = await prisma.siteConfig.findUnique({ where: { id: "singleton" } });
 
   if (!product) return notFound();
 
-  const images = JSON.parse(product.images);
+  const images = parseJsonList(product.images, ["/post01.jpg"]);
+  const videos = parseJsonList(product.videos, []);
   const waNumber = config?.whatsappNumber || "5563999999999";
-  
-  // Link dinâmico do WhatsApp (Fallback imediato)
+  const salePrice = product.promoPrice || product.price;
+  const stock = product.variants.reduce((sum, variant) => sum + variant.stock, 0);
+  const relatedProducts = await prisma.product.findMany({
+    where: { categoryId: product.categoryId, NOT: { id: product.id } },
+    include: { category: true, variants: true },
+    orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+    take: 4,
+  });
   const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(
-    `Salve Baggy Hype! \n\nVim pelo site e quero o produto: *${product.name}*\nID: ${product.id}\nPreço: R$ ${product.price.toString()}\n\nQual a disponibilidade para o tamanho [INSIRA SEU TAMANHO]?`
+    `Salve Baggy Hype!\n\nVim pelo site e quero o produto: *${product.name}*\nCodigo: ${product.slug || product.id}\nPreco: ${money(salePrice)}\n\nPode me ajudar com tamanho e disponibilidade?`
   )}`;
 
   return (
-    <div className="flex-1 w-full bg-black flex flex-col overflow-x-hidden selection:bg-orange-500/30">
-      <Navbar banner={{ 
-        text: config?.topBannerText || "🔥 FRETE GRÁTIS PARA PALMAS - TO | ENTREGA HOJE 🏁", 
-        visible: config?.isBannerVisible ?? true 
-      }} />
-      
-      {/* Breadcrumbs & Back */}
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8 pt-8 flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-white/40">
-        <Link href="/" className="flex items-center gap-2 hover:text-white transition-colors">
-            <ArrowLeft size={12} /> Voltar ao Catálogo
-        </Link>
-        <span>{product.category.name} / {product.id.slice(0, 8)}</span>
-      </div>
+    <div className="flex min-h-screen flex-col bg-black text-white">
+      <Navbar banner={{ text: config?.topBannerText || "FRETE GRATIS PARA PALMAS - TO | ENTREGA HOJE", visible: config?.isBannerVisible ?? true }} />
 
-      {/* Main Product Section */}
-      <section className="relative w-full max-w-7xl mx-auto px-4 md:px-8 py-12 flex flex-col md:flex-row gap-16 min-h-[90vh]">
-        
-        {/* Left: Product Images Stack */}
-        <div className="flex-1 flex flex-col gap-4 order-1">
-            <div className="relative aspect-[4/5] bg-neutral-900 border border-white/10 group overflow-hidden">
-                <Image 
-                    src={images[0] || "/post01.jpg"} 
-                    alt={product.name} 
-                    fill 
-                    className="object-cover grayscale hover:grayscale-0 transition-all duration-1000 scale-100 group-hover:scale-105"
-                />
-                <div className="absolute top-8 right-0 -translate-y-1/2 flex flex-col items-end gap-2 z-10">
-                   <span className="bg-primary text-black font-black text-[9px] uppercase px-4 py-2 rotate-[5deg] shadow-2xl tracking-tighter italic">
-                       Palmas 🏁 063 LOCAL
-                   </span>
-                </div>
-            </div>
-            {/* Gallery Thumbnails */}
-            <div className="grid grid-cols-2 gap-4">
-               {images.slice(1, 4).map((img: string, i: number) => (
-                  <div key={i} className="aspect-square bg-white/5 border border-white/5 hover:border-primary/40 transition-all cursor-pointer overflow-hidden group relative">
-                     <Image src={img} alt={`Thumb ${i}`} fill className="object-cover opacity-60 group-hover:opacity-100 transition-opacity" />
-                  </div>
-               ))}
-            </div>
+      <main className="flex-1">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-6 text-[10px] font-black uppercase tracking-widest text-white/40 md:px-8">
+          <Link href="/catalog" className="flex items-center gap-2 hover:text-white">
+            <ArrowLeft size={12} /> Voltar ao catalogo
+          </Link>
+          <span>{product.category.name} / {product.slug || product.id.slice(0, 8)}</span>
         </div>
 
-        {/* Right: Content */}
-        <div className="flex-[0.8] flex flex-col gap-8 order-2 sticky top-32 h-fit">
-            <div className="flex flex-col gap-3">
-                <p className="text-primary font-black uppercase text-[10px] md:text-xs tracking-[0.5em] italic">
-                   Collection / {product.category.name}
-                </p>
-                <h1 className="text-4xl md:text-7xl font-black uppercase italic tracking-tighter leading-none text-white max-w-sm">
-                   {product.name}
-                </h1>
-                <div className="flex items-end gap-4 mt-2">
-                    <span className="text-4xl md:text-6xl font-black italic tracking-tighter text-white">
-                        R$ {product.price.toString()}
-                    </span>
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 pb-2">Ou 3x no Cartão</span>
+        <section className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-4 pb-20 md:grid-cols-[1.08fr_0.92fr] md:px-8">
+          <ProductGallery images={images} name={product.name} />
+
+          <div className="flex flex-col gap-8 md:sticky md:top-32 md:h-fit">
+            <div className="flex flex-col gap-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Collection / {product.category.name}</p>
+              <h1 className="max-w-xl text-5xl font-black uppercase italic leading-[0.88] tracking-tighter md:text-7xl">{product.name}</h1>
+              <div className="grid grid-cols-1 gap-4 border-y border-white/10 py-5 sm:grid-cols-2">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Pix / WhatsApp</p>
+                  <p className="text-4xl font-black italic tracking-tighter text-primary">{money(salePrice)}</p>
+                  {product.promoPrice && <p className="text-xs font-bold text-white/25 line-through">{money(product.price)}</p>}
                 </div>
+                <div className="flex items-center gap-3 text-white/55">
+                  <CreditCard size={22} className="text-primary" />
+                  <p className="text-[10px] font-black uppercase leading-relaxed tracking-widest">Parcelamento combinado no atendimento</p>
+                </div>
+              </div>
             </div>
 
-            {/* Carrinho & Checkout (CLIENT COMPONENT) */}
             <AddToCartButton product={{
-                id: product.id,
-                name: product.name,
-                price: Number(product.price),
-                images: product.images,
-                sizes: product.sizes
+              id: product.id,
+              name: product.name,
+              price: Number(salePrice),
+              images: product.images,
+              sizes: product.sizes,
+              variants: product.variants.map((variant) => ({
+                id: variant.id,
+                color: variant.color,
+                size: variant.size,
+                stock: variant.stock,
+                price: variant.price ? Number(variant.price) : null,
+                promoPrice: variant.promoPrice ? Number(variant.promoPrice) : null,
+                media: variant.media,
+              })),
             }} />
 
-            {/* Secondary CTA: WHATSAPP */}
-            <div className="flex flex-col gap-4">
-                <a 
-                    href={waLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group w-full md:w-auto px-8 py-4 border border-white/20 text-white font-black uppercase text-[10px] tracking-widest hover:border-white transition-all flex items-center justify-center gap-4 hover:scale-[1.02] shadow-2xl active:scale-100"
-                >
-                    <Smartphone className="w-4 h-4 text-primary" />
-                    Dúvidas sobre o fit? WhatsApp
-                </a>
-                <div className="flex items-center gap-2 justify-center py-2 opacity-50">
-                    <Truck size={12} className="text-white" />
-                    <p className="text-[8px] font-bold uppercase tracking-widest text-white">Entrega hoje em Palmas (TO)</p>
-                </div>
-            </div>
+            <a
+              href={waLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-4 border border-white/20 px-8 py-4 text-[10px] font-black uppercase tracking-widest text-white transition-all hover:border-primary hover:text-primary"
+            >
+              <Smartphone className="h-4 w-4" />
+              Duvidas sobre fit? WhatsApp
+            </a>
 
-            {/* Info Grid */}
-            <div className="grid grid-cols-2 gap-px bg-white/5 mt-8 border border-white/5">
-                <div className="flex flex-col gap-3 p-6 bg-black">
-                    <Truck size={18} className="text-primary" />
-                    <span className="text-[10px] font-black uppercase text-white tracking-widest italic">Frete Grátis</span>
-                    <p className="text-[9px] text-white/30 lowercase font-medium leading-relaxed">Campanha 2026: Entrega 100% gratuita para toda capital Palmas.</p>
+            <div className="grid grid-cols-2 gap-px overflow-hidden border border-white/10 bg-white/10">
+              {[
+                { icon: Truck, title: "Frete gratis", text: "Entrega em Palmas conforme campanha ativa." },
+                { icon: MapPin, title: "Retirada local", text: "Combine prova ou retirada pelo WhatsApp." },
+                { icon: Ruler, title: "Modelagem", text: "Oversized, conforto amplo e caimento urbano." },
+                { icon: BadgeCheck, title: "Estoque", text: stock > 0 ? `${stock} unidades disponiveis` : "Consulte reposicao" },
+              ].map((item) => (
+                <div key={item.title} className="bg-black p-5">
+                  <item.icon className="mb-4 text-primary" size={18} />
+                  <h2 className="text-[10px] font-black uppercase tracking-widest">{item.title}</h2>
+                  <p className="mt-2 text-[9px] font-medium leading-relaxed text-white/35">{item.text}</p>
                 </div>
-                <div className="flex flex-col gap-3 p-6 bg-black">
-                    <MapPin size={18} className="text-primary" />
-                    <span className="text-[10px] font-black uppercase text-white tracking-widest italic">Pick-up 🏁 Local</span>
-                    <p className="text-[9px] text-white/30 lowercase font-medium leading-relaxed">Logística própria. Seu drop chega em horas, não dias.</p>
-                </div>
+              ))}
             </div>
+          </div>
+        </section>
 
-            {/* Detailed Description */}
-            <div className="flex flex-col gap-6 mt-12 py-12 border-t border-white/5">
-                <h3 className="text-xl font-black uppercase italic tracking-tighter text-white flex items-center gap-3">
-                    <Info size={16} className="text-primary" /> Manifesto
-                </h3>
-                <div className="flex flex-col gap-4 text-xs md:text-sm text-white/50 leading-loose italic font-medium max-w-lg">
-                    {product.description || "Fragmento da alma urbana. Conforto e atitude em cada fibra."}
-                </div>
+        <section className="mx-auto grid max-w-7xl gap-12 border-t border-white/10 px-4 py-16 md:grid-cols-[0.8fr_1.2fr] md:px-8">
+          <div>
+            <h2 className="flex items-center gap-3 text-3xl font-black uppercase italic tracking-tighter">
+              <Info className="text-primary" size={20} /> Caracteristicas
+            </h2>
+            <p className="mt-5 text-sm font-medium leading-loose text-white/50">
+              {product.description || "Fragmento da alma urbana. Conforto e atitude em cada fibra."}
+            </p>
+          </div>
+          <div className="grid gap-2 text-xs">
+            {[
+              ["Categoria", product.category.name],
+              ["Modelagem", "Oversized"],
+              ["Entrega", "Palmas - TO"],
+              ["Checkout", "WhatsApp"],
+            ].map(([label, value]) => (
+              <div key={label} className="grid grid-cols-[140px_1fr] bg-white/[0.04] px-4 py-3">
+                <span className="font-black uppercase tracking-widest text-white/35">{label}</span>
+                <span className="font-bold text-white/70">{value}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {videos[0] && (
+          <section className="mx-auto max-w-5xl px-4 py-16 md:px-8">
+            <h2 className="mb-8 text-center text-3xl font-black uppercase italic tracking-tighter">Video do produto</h2>
+            <div className="aspect-video overflow-hidden border border-white/10 bg-white/[0.03]">
+              <iframe src={videos[0]} title={`Video ${product.name}`} className="h-full w-full" allowFullScreen />
             </div>
-        </div>
-      </section>
+          </section>
+        )}
+
+        {relatedProducts.length > 0 && (
+          <section className="mx-auto max-w-7xl px-4 py-16 md:px-8">
+            <div className="mb-10 flex items-end justify-between gap-4">
+              <h2 className="text-4xl font-black uppercase italic tracking-tighter">Produtos relacionados</h2>
+              <Link href={`/catalog?category=${product.categoryId}`} className="text-[10px] font-black uppercase tracking-widest text-primary">Ver categoria</Link>
+            </div>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-4">
+              {relatedProducts.map((related) => <ProductCard key={related.id} product={related} badge="Relacionado" />)}
+            </div>
+          </section>
+        )}
+
+        <section className="mx-auto max-w-7xl px-4 py-16 md:px-8">
+          <div className="grid gap-6 border border-white/10 bg-white/[0.03] p-8 md:grid-cols-[240px_1fr]">
+            <div>
+              <p className="text-6xl font-black italic tracking-tighter text-primary">5/5</p>
+              <div className="mt-2 flex text-primary">{Array.from({ length: 5 }).map((_, index) => <Star key={index} size={18} fill="currentColor" />)}</div>
+            </div>
+            <div>
+              <h2 className="text-2xl font-black uppercase italic tracking-tighter">Aprovado pela banca local</h2>
+              <p className="mt-3 text-sm leading-relaxed text-white/50">
+                Base inicial de avaliacao editorial: caimento amplo, tecido confortavel e compra assistida para reduzir erro de tamanho antes do fechamento no WhatsApp.
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
 
       <Footer />
     </div>

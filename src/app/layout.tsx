@@ -14,8 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://baggyhype.club"),
   title: "Baggy Hype | Streetwear Palmas",
-  description: "Drip & Comfort em Palmas - TO. Entrega rápida e gratuita em toda a cidade.",
+  description: "Drip & Comfort em Palmas - TO. Entrega rapida e gratuita em toda a cidade.",
   keywords: ["streetwear", "Palmas", "Baggy Hype", "oversized", "moda masculina Palmas", "Tocantins"],
 };
 
@@ -27,12 +28,18 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-black text-white selection:bg-orange-500/30">
-        <CartProvider>
-          {children}
-        </CartProvider>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var theme=localStorage.getItem("baggy-theme");document.documentElement.classList.toggle("light",theme==="light")}catch(e){}`,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-black text-white selection:bg-primary/30">
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
   );

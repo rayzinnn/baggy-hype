@@ -4,18 +4,20 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 
 export interface CartItem {
   id: string;
+  variantId?: string;
   name: string;
   price: number;
   image: string;
   quantity: number;
+  color?: string;
   size?: string;
 }
 
 interface CartContextType {
   items: CartItem[];
   addItem: (item: CartItem) => void;
-  removeItem: (id: string, size?: string) => void;
-  updateQuantity: (id: string, size: string | undefined, quantity: number) => void;
+  removeItem: (id: string, size?: string, variantId?: string) => void;
+  updateQuantity: (id: string, size: string | undefined, quantity: number, variantId?: string) => void;
   clearCart: () => void;
   total: number;
   count: number;
@@ -24,33 +26,30 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [items, setItems] = useState<CartItem[]>(() => {
+    if (typeof window === "undefined") return [];
 
-  useEffect(() => {
-    const saved = localStorage.getItem("baggy-cart");
-    if (saved) {
+    const saved = window.localStorage.getItem("baggy-cart");
+    if (!saved) return [];
+
       try {
-        setItems(JSON.parse(saved));
-      } catch (e) {
-        console.error("Cart load error", e);
+        return JSON.parse(saved) as CartItem[];
+      } catch (error) {
+        console.error("Cart load error", error);
+        return [];
       }
-    }
-    setIsLoaded(true);
-  }, []);
+  });
 
   useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem("baggy-cart", JSON.stringify(items));
-    }
-  }, [items, isLoaded]);
+    window.localStorage.setItem("baggy-cart", JSON.stringify(items));
+  }, [items]);
 
   const addItem = (item: CartItem) => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.id === item.id && i.size === item.size);
+      const existing = prev.find((i) => i.id === item.id && i.size === item.size && i.variantId === item.variantId);
       if (existing) {
         return prev.map((i) =>
-          i.id === item.id && i.size === item.size
+          i.id === item.id && i.size === item.size && i.variantId === item.variantId
             ? { ...i, quantity: i.quantity + item.quantity }
             : i
         );
@@ -59,17 +58,17 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  const removeItem = (id: string, size?: string) => {
-    setItems((prev) => prev.filter((i) => !(i.id === id && i.size === size)));
+  const removeItem = (id: string, size?: string, variantId?: string) => {
+    setItems((prev) => prev.filter((i) => !(i.id === id && i.size === size && i.variantId === variantId)));
   };
 
-  const updateQuantity = (id: string, size: string | undefined, quantity: number) => {
+  const updateQuantity = (id: string, size: string | undefined, quantity: number, variantId?: string) => {
     if (quantity <= 0) {
-      removeItem(id, size);
+      removeItem(id, size, variantId);
       return;
     }
     setItems((prev) =>
-      prev.map((i) => (i.id === id && i.size === size ? { ...i, quantity } : i))
+      prev.map((i) => (i.id === id && i.size === size && i.variantId === variantId ? { ...i, quantity } : i))
     );
   };
 

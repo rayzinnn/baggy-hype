@@ -2,9 +2,10 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-center"; // Fixed icon library name discrepancy if any, but lucide-react is the standard. Keeping as lucide-react.
 import { ArrowRight as ArrowRightIcon } from "lucide-react";
 import { getFeaturedProducts, getSiteConfig } from "@/lib/data";
+
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const config = await getSiteConfig();
@@ -59,6 +60,7 @@ export default async function Home() {
                         src={config?.heroImage1 || "/post01.jpg"} 
                         alt="Baggy Hero Drop" 
                         fill 
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         priority 
                         className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-100 group-hover:scale-110"
                     />
@@ -102,15 +104,16 @@ export default async function Home() {
                     let images = ["/post01.jpg"];
                     try {
                         images = JSON.parse(product.images);
-                    } catch (e) {}
+                    } catch {}
                     
                     return (
-                        <Link href={`/product/${product.id}`} key={product.id} className="group flex flex-col gap-4">
+                        <Link href={`/product/${product.slug || product.id}`} key={product.id} className="group flex flex-col gap-4">
                             <div className="aspect-[3/4] bg-neutral-900 overflow-hidden relative border border-white/5">
                                 <Image 
                                     src={images[0] || "/post01.jpg"} 
                                     alt={product.name} 
                                     fill 
+                                    sizes="(max-width: 768px) 50vw, 25vw"
                                     className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
                                 />
                                 <div className="absolute top-0 right-0 p-3 flex flex-col items-end gap-1">
