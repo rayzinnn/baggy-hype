@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
+export const runtime = "nodejs";
+
 type CheckoutItemInput = {
   id?: unknown;
   variantId?: unknown;

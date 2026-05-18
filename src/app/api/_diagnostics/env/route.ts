@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+export const runtime = "nodejs";
+
 export async function GET() {
   const keys = [
     "SUPABASE_URL",
@@ -14,4 +16,3 @@ export async function GET() {
 
   return NextResponse.json({ present });
 }
-

@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
+export const runtime = "nodejs";
+
 const VALID_EVENTS = new Set(["CART_ADD", "WHATSAPP_CHECKOUT"]);
 const WINDOW_MS = 60_000;
 const MAX_EVENTS_PER_WINDOW = 40;

@@ -5,6 +5,8 @@ import {
 } from "@/lib/admin-session";
 import { createClient } from "@supabase/supabase-js";
 
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const email = typeof body?.email === "string" ? body.email : "";

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 
+export const runtime = "nodejs";
+
 type CommitInput = {
   productId?: unknown;
   variantId?: unknown;

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/admin-guard";
 import { getSupabaseAdminClient, getSupabasePublicUrl } from "@/lib/supabase-admin";
 
+export const runtime = "nodejs";
+
 type FileInput = {
   filename?: unknown;
   contentType?: unknown;
