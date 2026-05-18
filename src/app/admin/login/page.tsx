@@ -64,7 +64,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 className="w-full bg-black border border-white/10 rounded-xl py-4 pl-12 pr-4 text-sm text-white focus:border-primary transition-all outline-none"
-                placeholder="admin@baggyhype.club"
+                placeholder="email do admin"
                 required
               />
             </span>
