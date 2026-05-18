@@ -2,13 +2,15 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { authConfig } from "./auth.config";
 
-const fallbackAdminEmail = "admin@baggyhype.club";
-const fallbackAdminPassword = "baggy2026";
-const fallbackAuthSecret = "BaggyHype2026SecretKeyForAuth";
+function requireEnv(name: string) {
+  const value = process.env[name];
+  if (!value) throw new Error(`Missing ${name}`);
+  return value;
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
-  secret: process.env.AUTH_SECRET || fallbackAuthSecret,
+  secret: requireEnv("AUTH_SECRET"),
   trustHost: true,
   providers: [
     Credentials({
@@ -17,8 +19,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const email = credentials.email as string;
         const password = credentials.password as string;
-        const adminEmail = process.env.ADMIN_EMAIL || fallbackAdminEmail;
-        const adminPassword = process.env.ADMIN_PASSWORD || fallbackAdminPassword;
+        const adminEmail = requireEnv("ADMIN_EMAIL");
+        const adminPassword = requireEnv("ADMIN_PASSWORD");
 
         // Temporary fallback for the hosted admin while Netlify env vars are being configured.
         if (email === adminEmail && password === adminPassword) {

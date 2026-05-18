@@ -1,11 +1,13 @@
 export const adminSessionCookieName = "baggy_admin_session";
 
-const fallbackAdminEmail = "admin@baggyhype.club";
-const fallbackAdminPassword = "baggy2026";
-const fallbackAdminSessionToken = "baggy-hype-temporary-admin-session";
+function getRequiredEnv(name: string) {
+  const value = process.env[name];
+  if (!value) throw new Error(`Missing ${name}`);
+  return value;
+}
 
 export function getAdminSessionToken() {
-  return process.env.ADMIN_SESSION_TOKEN || process.env.AUTH_SECRET || fallbackAdminSessionToken;
+  return process.env.ADMIN_SESSION_TOKEN || getRequiredEnv("AUTH_SECRET");
 }
 
 export function isValidAdminSessionToken(value?: string) {
@@ -13,8 +15,8 @@ export function isValidAdminSessionToken(value?: string) {
 }
 
 export function validateAdminCredentials(email: string, password: string) {
-  const adminEmail = process.env.ADMIN_EMAIL || fallbackAdminEmail;
-  const adminPassword = process.env.ADMIN_PASSWORD || fallbackAdminPassword;
+  const adminEmail = getRequiredEnv("ADMIN_EMAIL");
+  const adminPassword = getRequiredEnv("ADMIN_PASSWORD");
 
   return email === adminEmail && password === adminPassword;
 }

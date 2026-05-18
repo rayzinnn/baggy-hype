@@ -12,8 +12,12 @@ const adapter = new PrismaPg({ connectionString: databaseUrl });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  const email = process.env.ADMIN_EMAIL || "admin@baggyhype.club";
-  const password = process.env.ADMIN_PASSWORD || "baggy2026";
+  const email = process.env.ADMIN_EMAIL;
+  const password = process.env.ADMIN_PASSWORD;
+
+  if (!email || !password) {
+    throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD are required to seed.");
+  }
   const hashedPassword = await bcrypt.hash(password, 10);
 
   await prisma.adminUser.upsert({
