@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://baggyhype.club"),
   title: "Baggy Hype | Streetwear Palmas",
-  description: "Drip & Comfort em Palmas - TO. Entrega rapida e gratuita em toda a cidade.",
+  description: "Streetwear oversized em Palmas - TO. Pedido no site e fechamento no WhatsApp.",
   keywords: ["streetwear", "Palmas", "Baggy Hype", "oversized", "moda masculina Palmas", "Tocantins"],
 };
 

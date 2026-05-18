@@ -44,7 +44,7 @@ export default function LoginPage() {
             Baggy<span className="text-primary italic">Admin</span>
           </h1>
           <p className="text-white/40 text-[10px] font-bold uppercase tracking-[0.4em] mt-2">
-            Painel de Controle Exclusivo
+            Acesso do painel
           </p>
         </div>
 
@@ -90,12 +90,12 @@ export default function LoginPage() {
             disabled={isLoading}
             className="w-full bg-white text-black font-black uppercase text-xs tracking-widest py-4 rounded-xl mt-4 hover:bg-primary transition-all disabled:opacity-50"
           >
-            {isLoading ? "Acessando..." : "Entrar no Painel"}
+            {isLoading ? "Entrando..." : "Entrar"}
           </button>
         </form>
 
         <p className="text-center text-[9px] font-bold uppercase tracking-widest text-white/20">
-          Acesso Restrito - Baggy Hype Streetwear 2026
+          Acesso restrito
         </p>
       </div>
     </div>

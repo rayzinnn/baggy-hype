@@ -64,8 +64,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     <div className="flex flex-col gap-8 py-4">
       <header className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
         <div className="flex flex-col gap-1">
-          <h2 className="text-3xl font-black uppercase italic tracking-tighter">Dashboard <span className="text-primary italic">Overview</span></h2>
-          <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Dados reais do funil Baggy Hype</p>
+          <h2 className="text-3xl font-black uppercase italic tracking-tighter">Dashboard <span className="text-primary italic">geral</span></h2>
+          <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Resumo do funil (carrinho, WhatsApp e vendas)</p>
         </div>
         <DateRangeFilter action="/admin/dashboard" from={range.fromValue} to={range.toValue} extra={{ metric }} />
       </header>
@@ -86,7 +86,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       <section className="bg-surface rounded-3xl border border-white/5 p-5 md:p-8 flex flex-col gap-8 shadow-2xl">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h3 className="text-xl font-black uppercase italic tracking-tighter">Grafico de metricas</h3>
+            <h3 className="text-xl font-black uppercase italic tracking-tighter">Grafico</h3>
             <p className="text-[10px] font-bold uppercase tracking-widest text-white/30">{metricLabels[metric]}</p>
           </div>
           <form action="/admin/dashboard" className="flex flex-wrap gap-2">

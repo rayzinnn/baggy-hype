@@ -9,7 +9,7 @@ export default async function PrivacyPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-black text-white">
-      <Navbar banner={{ text: config?.topBannerText || "FRETE GRATIS PARA PALMAS - TO | ENTREGA HOJE", visible: config?.isBannerVisible ?? true }} />
+      <Navbar banner={{ text: config?.topBannerText || "FRETE GRATIS EM PALMAS - TO / ENTREGA LOCAL", visible: config?.isBannerVisible ?? true }} />
       <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-10 px-4 py-16 md:px-8 md:py-24">
         <header className="flex flex-col gap-4">
           <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Privacidade</span>
@@ -18,7 +18,7 @@ export default async function PrivacyPage() {
         <div className="grid gap-4 text-sm leading-relaxed text-white/55">
           <p>Coletamos nome, contato, documento e endereco apenas para registrar pedidos, organizar entregas e continuar o atendimento via WhatsApp.</p>
           <p>Os dados ficam no painel administrativo da Baggy Hype e nao sao vendidos. O acesso administrativo deve permanecer restrito a pessoas autorizadas.</p>
-          <p>Solicitacoes de correcao ou remocao de dados podem ser feitas pelo canal de atendimento oficial.</p>
+          <p>Para correcao ou remocao de dados, fale com a gente no canal oficial de atendimento.</p>
         </div>
       </main>
       <Footer />

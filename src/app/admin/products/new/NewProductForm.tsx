@@ -2,8 +2,8 @@
 
 import { createProduct } from "@/lib/actions/products";
 import type { ProductActionState } from "@/lib/actions/products";
-import { MediaOrderField } from "@/components/admin/MediaOrderField";
 import { VariantEditor } from "@/components/admin/VariantEditor";
+import { MediaUploaderField } from "@/components/admin/MediaUploaderField";
 import { AlertCircle, ChevronLeft, Loader2, Plus } from "lucide-react";
 import Link from "next/link";
 import { useActionState } from "react";
@@ -95,8 +95,8 @@ export function NewProductForm({ categories }: { categories: CategoryOption[] })
               <h3 className="text-lg font-black uppercase italic tracking-tighter">Midias</h3>
               <p className="text-[9px] font-bold uppercase tracking-widest text-white/30">A ordem abaixo define a vitrine do produto.</p>
             </div>
-            <MediaOrderField name="images" placeholder="/post01.jpg ou https://..." />
-            <MediaOrderField name="videos" placeholder="URL do video" />
+            <MediaUploaderField productId="" name="images" label="Fotos" mediaType="IMAGE" accept="image/*" commitToDb={false} />
+            <MediaUploaderField productId="" name="videos" label="Videos" mediaType="VIDEO" accept="video/*" commitToDb={false} />
           </div>
           <label className="bg-surface p-8 rounded-3xl border border-white/5 flex items-center justify-between shadow-2xl">
             <span className="text-[10px] font-black uppercase tracking-widest text-white">Drop Destaque?</span>

@@ -38,6 +38,31 @@ function slugify(value: string) {
     .replace(/(^-|-$)+/g, "");
 }
 
+async function syncProductMedia(productId: string, images: string[], videos: string[]) {
+  await prisma.productMedia.deleteMany({
+    where: {
+      productId,
+      variantId: null,
+      type: { in: ["IMAGE", "VIDEO"] },
+    },
+  });
+
+  const media = [
+    ...images.map((url, index) => ({ type: "IMAGE" as const, url, sortOrder: index })),
+    ...videos.map((url, index) => ({ type: "VIDEO" as const, url, sortOrder: index })),
+  ];
+
+  if (media.length === 0) return;
+  await prisma.productMedia.createMany({
+    data: media.map((item) => ({
+      productId,
+      type: item.type,
+      url: item.url,
+      sortOrder: item.sortOrder,
+    })),
+  });
+}
+
 async function requireAdmin() {
   return requireAdminSession();
 }
@@ -130,6 +155,7 @@ export async function createProduct(formData: FormData): Promise<ProductActionSt
       },
     });
 
+    await syncProductMedia(product.id, images, videos);
     await syncVariants(product.id, getString(formData, "variants"), price, cost, images);
 
     revalidatePath("/admin/products");
@@ -179,6 +205,7 @@ export async function updateProduct(productId: string, formData: FormData): Prom
       },
     });
 
+    await syncProductMedia(productId, images, videos);
     await syncVariants(productId, getString(formData, "variants"), price, cost, images);
 
     revalidatePath("/admin/products");

@@ -26,7 +26,7 @@ export async function updateSiteConfig(formData: FormData) {
     },
     create: {
       id: "singleton",
-      topBannerText: topBannerText || "FRETE GRATIS PARA PALMAS - TO | ENTREGA HOJE",
+      topBannerText: topBannerText || "FRETE GRATIS EM PALMAS - TO / ENTREGA LOCAL",
       whatsappNumber: whatsappNumber || "5563999999999",
       isBannerVisible,
       heroImage1: heroImage1 || "/post01.jpg",

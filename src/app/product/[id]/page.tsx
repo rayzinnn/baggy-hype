@@ -43,10 +43,10 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
   return {
     title: product.seoTitle || `${product.name} | Baggy Hype`,
-    description: product.seoDescription || product.description || "Streetwear oversized em Palmas - TO com checkout via WhatsApp.",
+    description: product.seoDescription || product.description || "Streetwear oversized em Palmas - TO. Pedido no site e fechamento no WhatsApp.",
     openGraph: {
       title: product.name,
-      description: product.description || "Drop Baggy Hype disponivel em Palmas - TO.",
+      description: product.description || "Produto disponivel em Palmas - TO.",
       images: parseJsonList(product.images, ["/post01.jpg"]).slice(0, 1),
     },
   };
@@ -73,7 +73,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     take: 4,
   });
   const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(
-    `Salve Baggy Hype!\n\nVim pelo site e quero o produto: *${product.name}*\nCodigo: ${product.slug || product.id}\nPreco: ${money(salePrice)}\n\nPode me ajudar com tamanho e disponibilidade?`
+    `Salve Baggy Hype!\n\nVim pelo site e quero: *${product.name}*\nCodigo: ${product.slug || product.id}\nPreco: ${money(salePrice)}\n\nMe ajuda com tamanho e disponibilidade?`
   )}`;
 
   return (
@@ -97,13 +97,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <h1 className="max-w-xl text-5xl font-black uppercase italic leading-[0.88] tracking-tighter md:text-7xl">{product.name}</h1>
               <div className="grid grid-cols-1 gap-4 border-y border-white/10 py-5 sm:grid-cols-2">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Pix / WhatsApp</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Preco</p>
                   <p className="text-4xl font-black italic tracking-tighter text-primary">{money(salePrice)}</p>
                   {product.promoPrice && <p className="text-xs font-bold text-white/25 line-through">{money(product.price)}</p>}
                 </div>
                 <div className="flex items-center gap-3 text-white/55">
                   <CreditCard size={22} className="text-primary" />
-                  <p className="text-[10px] font-black uppercase leading-relaxed tracking-widest">Parcelamento combinado no atendimento</p>
+                  <p className="text-[10px] font-black uppercase leading-relaxed tracking-widest">Parcelamento e condicoes no atendimento</p>
                 </div>
               </div>
             </div>
@@ -132,12 +132,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
               className="flex w-full items-center justify-center gap-4 border border-white/20 px-8 py-4 text-[10px] font-black uppercase tracking-widest text-white transition-all hover:border-primary hover:text-primary"
             >
               <Smartphone className="h-4 w-4" />
-              Duvidas sobre fit? WhatsApp
+              Duvidas de tamanho? Chama no WhatsApp
             </a>
 
             <div className="grid grid-cols-2 gap-px overflow-hidden border border-white/10 bg-white/10">
               {[
-                { icon: Truck, title: "Frete gratis", text: "Entrega em Palmas conforme campanha ativa." },
+                { icon: Truck, title: "Frete gratis", text: "Entrega em Palmas quando a campanha estiver ativa." },
                 { icon: MapPin, title: "Retirada local", text: "Combine prova ou retirada pelo WhatsApp." },
                 { icon: Ruler, title: "Modelagem", text: "Oversized, conforto amplo e caimento urbano." },
                 { icon: BadgeCheck, title: "Estoque", text: stock > 0 ? `${stock} unidades disponiveis` : "Consulte reposicao" },
@@ -158,7 +158,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <Info className="text-primary" size={20} /> Caracteristicas
             </h2>
             <p className="mt-5 text-sm font-medium leading-loose text-white/50">
-              {product.description || "Fragmento da alma urbana. Conforto e atitude em cada fibra."}
+              {product.description || "Tecido confortável, caimento oversized e acabamento feito pra aguentar o corre."}
             </p>
           </div>
           <div className="grid gap-2 text-xs">
@@ -206,7 +206,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <div>
               <h2 className="text-2xl font-black uppercase italic tracking-tighter">Aprovado pela banca local</h2>
               <p className="mt-3 text-sm leading-relaxed text-white/50">
-                Base inicial de avaliacao editorial: caimento amplo, tecido confortavel e compra assistida para reduzir erro de tamanho antes do fechamento no WhatsApp.
+                Avaliacao editorial inicial: caimento amplo, tecido confortavel e atendimento rapido pra acertar o tamanho antes de fechar no WhatsApp.
               </p>
             </div>
           </div>

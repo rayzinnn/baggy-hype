@@ -8,7 +8,7 @@ export default async function SettingsPage() {
   const config = await prisma.siteConfig.findUnique({
     where: { id: "singleton" },
   }) || {
-    topBannerText: "FRETE GRATIS PARA PALMAS - TO | ENTREGA HOJE",
+    topBannerText: "FRETE GRATIS EM PALMAS - TO / ENTREGA LOCAL",
     whatsappNumber: "5563999999999",
     isBannerVisible: true,
     heroImage1: "/post01.jpg",
@@ -20,9 +20,9 @@ export default async function SettingsPage() {
     <div className="flex flex-col gap-8 py-4">
       <header className="flex flex-col gap-1">
         <h2 className="text-3xl font-black uppercase italic tracking-tighter text-white">
-          Configuracoes <span className="text-primary italic">Plataforma</span>
+          Configuracoes <span className="text-primary italic">do site</span>
         </h2>
-        <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Ajustes globais do site e contato</p>
+        <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Banner, WhatsApp e imagens da home</p>
       </header>
 
       <form action={updateSiteConfig} className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-8">
@@ -69,7 +69,7 @@ export default async function SettingsPage() {
           <div className="bg-surface p-5 md:p-8 rounded-3xl border border-white/5 shadow-2xl flex flex-col gap-6">
             <div className="flex items-center gap-3 mb-2">
               <ImageIcon className="text-primary" size={20} />
-              <h3 className="text-sm font-black uppercase tracking-widest italic text-white">Herois da Home</h3>
+              <h3 className="text-sm font-black uppercase tracking-widest italic text-white">Imagens da home</h3>
             </div>
 
             {[
@@ -93,7 +93,7 @@ export default async function SettingsPage() {
             type="submit"
             className="w-full bg-white text-black font-black uppercase text-xs tracking-widest py-6 rounded-2xl hover:bg-primary transition-all flex items-center justify-center gap-3 shadow-2xl hover:scale-[1.01] active:scale-95 duration-200"
           >
-            Salvar Configuracao Global
+            Salvar configuracoes
             <Save size={16} strokeWidth={3} />
           </button>
         </div>

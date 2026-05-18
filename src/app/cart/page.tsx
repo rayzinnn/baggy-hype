@@ -53,11 +53,11 @@ export default function CartPage() {
           <div className="flex items-center gap-3">
             <span className="w-10 h-[3px] bg-primary" />
             <h2 className="text-[10px] md:text-xs font-black uppercase tracking-[0.5em] text-white/40 italic">
-              Seu Drop / {count} Itens
+              Carrinho / {count} itens
             </h2>
           </div>
           <h1 className="text-5xl md:text-8xl font-black uppercase italic tracking-tighter leading-none text-white">
-            MEU <span className="text-primary italic">CARRINHO</span>
+            Meu <span className="text-primary italic">carrinho</span>
           </h1>
         </header>
 
@@ -65,11 +65,11 @@ export default function CartPage() {
           <div className="flex flex-col items-center justify-center py-32 gap-8 border border-white/5 bg-white/[0.02]">
             <ShoppingBag size={64} className="text-white/10" />
             <div className="text-center flex flex-col gap-2">
-              <p className="text-xl font-bold uppercase tracking-widest text-white/40 italic">Seu drop esta vazio.</p>
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">O estilo nao espera. Vamos comecar?</p>
+              <p className="text-xl font-bold uppercase tracking-widest text-white/40 italic">Carrinho vazio.</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">Volta pra vitrine e escolhe o tamanho certo.</p>
             </div>
             <Link href="/" className="px-10 py-5 bg-white text-black font-black uppercase text-[10px] tracking-widest hover:bg-primary transition-all border border-white">
-              Explorar Catalogo
+              Ver vitrine
             </Link>
           </div>
         ) : (
@@ -129,7 +129,7 @@ export default function CartPage() {
             <div className="flex flex-col gap-8">
               <div className="bg-white/[0.03] border border-white/5 p-8 md:p-12 flex flex-col gap-12 sticky top-32">
                 <h3 className="text-xl font-black uppercase italic tracking-tighter text-white">
-                  Resumo do <span className="text-primary italic">Drop</span>
+                  Resumo do <span className="text-primary italic">pedido</span>
                 </h3>
 
                 <div className="flex flex-col gap-6">
@@ -138,8 +138,8 @@ export default function CartPage() {
                     <input value={customer.email} onChange={(event) => setCustomer((prev) => ({ ...prev, email: event.target.value }))} placeholder="E-mail" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary" />
                     <input value={customer.phone} onChange={(event) => setCustomer((prev) => ({ ...prev, phone: event.target.value }))} placeholder="WhatsApp" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary" />
                     <input value={customer.document} onChange={(event) => setCustomer((prev) => ({ ...prev, document: event.target.value }))} placeholder="CPF ou CNPJ" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary" />
-                    <textarea value={customer.address} onChange={(event) => setCustomer((prev) => ({ ...prev, address: event.target.value }))} placeholder="Endereco de entrega" rows={3} className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary resize-none" />
-                    <input value={couponCode} onChange={(event) => setCouponCode(event.target.value.toUpperCase())} placeholder="Cupom de desconto" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary uppercase" />
+                    <textarea value={customer.address} onChange={(event) => setCustomer((prev) => ({ ...prev, address: event.target.value }))} placeholder="Endereco para entrega" rows={3} className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary resize-none" />
+                    <input value={couponCode} onChange={(event) => setCouponCode(event.target.value.toUpperCase())} placeholder="Cupom (opcional)" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary uppercase" />
                   </div>
                   <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
                     <span className="text-white/40">Subtotal</span>
@@ -151,7 +151,7 @@ export default function CartPage() {
                   </div>
                   <div className="w-full h-px bg-white/10 mt-2" />
                   <div className="flex justify-between items-end">
-                    <span className="text-xs font-black uppercase tracking-widest text-white/60">Total Brutal</span>
+                    <span className="text-xs font-black uppercase tracking-widest text-white/60">Total</span>
                     <span className="text-4xl font-black italic tracking-tighter text-primary">R$ {total.toFixed(2)}</span>
                   </div>
                 </div>
@@ -163,12 +163,12 @@ export default function CartPage() {
                     className="group w-full py-6 bg-white text-black font-black uppercase text-xs md:text-sm tracking-widest hover:bg-primary transition-all flex items-center justify-center gap-4 hover:scale-[1.02] shadow-2xl active:scale-100 border border-white disabled:opacity-60 disabled:hover:scale-100"
                   >
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    {isCheckingOut ? "Registrando Pedido..." : "Fechar Drop no WhatsApp"}
+                    {isCheckingOut ? "Registrando pedido..." : "Finalizar no WhatsApp"}
                   </button>
                   <div className="flex flex-col items-center gap-2 mt-4 opacity-50">
                     <div className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                      <p className="text-[8px] font-bold uppercase tracking-widest text-white">Pick-up local imediata</p>
+                      <p className="text-[8px] font-bold uppercase tracking-widest text-white">Entrega local / retirada combinada</p>
                     </div>
                   </div>
                 </div>
@@ -176,7 +176,7 @@ export default function CartPage() {
                 <div className="flex flex-col gap-4 pt-8 border-t border-white/5 opacity-30">
                   <div className="flex items-center gap-3">
                     <Smartphone size={16} />
-                    <span className="text-[10px] font-bold uppercase tracking-widest leading-relaxed">Suporte direto via WhatsApp para fechamento</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest leading-relaxed">Suporte no WhatsApp para fechar pedido</span>
                   </div>
                 </div>
               </div>

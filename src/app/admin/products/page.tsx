@@ -41,12 +41,12 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
     <div className="flex flex-col gap-8 py-4">
       <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
         <div className="flex flex-col gap-1">
-          <h2 className="text-3xl font-black uppercase italic tracking-tighter">Catalogo <span className="text-primary italic">Produtos</span></h2>
-          <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Produtos pai, variantes e estoque</p>
+          <h2 className="text-3xl font-black uppercase italic tracking-tighter">Produtos <span className="text-primary italic">da loja</span></h2>
+          <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Cadastro, variantes e estoque</p>
         </div>
         <Link href="/admin/products/new" className="w-full md:w-auto px-8 py-4 bg-white text-black font-black uppercase text-[10px] tracking-widest rounded-xl flex items-center justify-center gap-3 hover:bg-primary transition-all">
           <Plus size={16} strokeWidth={3} />
-          Lancar Novo Drop
+          Novo produto
         </Link>
       </header>
 
@@ -61,14 +61,14 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
             <option key={category.id} value={category.id}>{category.name}</option>
           ))}
         </select>
-        <button className="px-6 py-4 bg-white text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-primary transition-all">Filtrar</button>
+        <button className="px-6 py-4 bg-white text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-primary transition-all">Aplicar</button>
       </form>
 
       <div className="md:hidden flex flex-col gap-3">
         {products.length === 0 ? (
           <div className="bg-surface border border-white/5 rounded-3xl p-10 text-center">
             <Package size={36} className="text-white/10 mx-auto mb-4" />
-            <p className="text-[10px] font-black uppercase tracking-widest text-white/20">Nenhum drop cadastrado.</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-white/20">Nenhum produto cadastrado.</p>
           </div>
         ) : (
           products.map((product) => {

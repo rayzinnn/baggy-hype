@@ -1,10 +1,10 @@
-import { MediaOrderField } from "@/components/admin/MediaOrderField";
 import { VariantEditor } from "@/components/admin/VariantEditor";
 import { updateProduct } from "@/lib/actions/products";
 import { prisma } from "@/lib/prisma";
 import { ChevronLeft, Save } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { MediaUploaderField } from "@/components/admin/MediaUploaderField";
 
 export const dynamic = "force-dynamic";
 
@@ -117,8 +117,8 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
               <h3 className="text-lg font-black uppercase italic tracking-tighter">Midias</h3>
               <p className="text-[9px] font-bold uppercase tracking-widest text-white/30">Reordene fotos e videos do produto.</p>
             </div>
-            <MediaOrderField name="images" initialValue={images} placeholder="/post01.jpg ou https://..." />
-            <MediaOrderField name="videos" initialValue={videos} placeholder="URL do video" />
+            <MediaUploaderField productId={productId} name="images" label="Fotos" initialValue={images} mediaType="IMAGE" accept="image/*" />
+            <MediaUploaderField productId={productId} name="videos" label="Videos" initialValue={videos} mediaType="VIDEO" accept="video/*" />
           </div>
           <label className="bg-surface p-8 rounded-3xl border border-white/5 flex items-center justify-between shadow-2xl">
             <span className="text-[10px] font-black uppercase tracking-widest text-white">Drop Destaque?</span>

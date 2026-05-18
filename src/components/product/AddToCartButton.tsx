@@ -38,7 +38,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 
     const handleAdd = () => {
         if (selectableVariants.length > 0 && !selectedVariant) {
-            alert("Por favor, selecione uma variante.");
+            alert("Selecione a variante para continuar.");
             return;
         }
 
@@ -48,7 +48,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
         }
 
         if (!selectedVariant && sizes.length > 0 && !selectedSize) {
-            alert("Por favor, selecione um tamanho.");
+            alert("Selecione um tamanho para continuar.");
             return;
         }
 
@@ -85,8 +85,8 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
             {/* Tamanhos Selection */}
             <div className="flex flex-col gap-4 border-t border-white/5 pt-8">
                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                  <span className="text-white/40">Selecione o Tamanho</span>
-                  <span className="text-primary tracking-widest italic">Stock: Palmas - TO</span>
+                  <span className="text-white/40">Escolha a variacao</span>
+                  <span className="text-primary tracking-widest italic">Estoque local</span>
                </div>
                <div className="flex flex-wrap gap-2 text-center items-center justify-start">
                   {selectableVariants.length > 0 ? (
@@ -134,12 +134,12 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
             >
                 {isAdded ? (
                     <>
-                        <Check className="w-5 h-5" /> Adicionado!
+                        <Check className="w-5 h-5" /> No carrinho
                     </>
                 ) : (
                     <>
                         <ShoppingBag className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                        Adicionar ao Drop
+                        Adicionar ao carrinho
                     </>
                 )}
             </button>
