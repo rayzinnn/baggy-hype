@@ -1,11 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { adminSessionCookieName, isValidAdminSessionToken } from "@/lib/admin-session";
+import { hasAdminAuthCookies } from "@/lib/admin-session";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isLoginRoute = pathname === "/admin/login";
-  const sessionToken = request.cookies.get(adminSessionCookieName)?.value;
-  const isLoggedIn = isValidAdminSessionToken(sessionToken);
+  const isLoggedIn = hasAdminAuthCookies(request.cookies);
 
   if (pathname.startsWith("/admin") && !isLoginRoute && !isLoggedIn) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
