@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   const url = process.env.SUPABASE_URL || SUPABASE_URL_FALLBACK;
   const anonKey = process.env.SUPABASE_ANON_KEY;
   if (!anonKey) {
-    return NextResponse.json({ error: "Configuracao ausente." }, { status: 500 });
+    return NextResponse.json({ error: "Configuracao ausente.", missing: ["SUPABASE_ANON_KEY"] }, { status: 500 });
   }
 
   const supabase = createClient(url, anonKey, {
