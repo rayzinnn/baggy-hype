@@ -4,6 +4,8 @@ import { adminAccessCookieName, adminRefreshCookieName, hasAdminAuthCookies } fr
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 
+const SUPABASE_URL_FALLBACK = "https://jdffqusqshiecddczwpr.supabase.co";
+
 export async function requireAdminSession() {
   const cookieStore = await cookies();
   if (!hasAdminAuthCookies(cookieStore)) return false;
@@ -12,9 +14,9 @@ export async function requireAdminSession() {
   const refresh = cookieStore.get(adminRefreshCookieName)?.value;
   if (!access || !refresh) return false;
 
-  const url = process.env.SUPABASE_URL;
+  const url = process.env.SUPABASE_URL || SUPABASE_URL_FALLBACK;
   const anonKey = process.env.SUPABASE_ANON_KEY;
-  if (!url || !anonKey) return false;
+  if (!anonKey) return false;
 
   const supabase = createClient(url, anonKey, {
     auth: { persistSession: false, autoRefreshToken: false },

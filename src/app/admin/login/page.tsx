@@ -24,7 +24,9 @@ export default function LoginPage() {
       });
 
       if (!response.ok) {
-        setError("Credenciais invalidas. Tente novamente.");
+        const payload = await response.json().catch(() => null);
+        const msg = typeof payload?.error === "string" ? payload.error : "";
+        setError(msg || "Credenciais invalidas. Tente novamente.");
       } else {
         router.push("/admin/dashboard");
         router.refresh();
