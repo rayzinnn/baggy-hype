@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "./prisma";
+import { defaultStoreConfig } from "./store-config";
 
 export async function getFeaturedProducts() {
   try {
@@ -18,9 +19,10 @@ export async function getFeaturedProducts() {
 
 export async function getSiteConfig() {
     try {
-        return await prisma.siteConfig.findUnique({ where: { id: "singleton" } });
+        const config = await prisma.siteConfig.findUnique({ where: { id: "singleton" } });
+        return config || defaultStoreConfig;
     } catch (error) {
         console.error("Prisma Error in getSiteConfig:", error);
-        return null;
+        return defaultStoreConfig;
     }
 }

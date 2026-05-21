@@ -1,6 +1,7 @@
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { ProductCard } from "@/components/product/ProductCard";
+import { defaultStoreConfig } from "@/lib/store-config";
 import { prisma } from "@/lib/prisma";
 import { Search, SlidersHorizontal, Truck } from "lucide-react";
 import Link from "next/link";
@@ -41,20 +42,22 @@ export default async function CatalogPage({ searchParams }: { searchParams: Prom
           : [{ isFeatured: "desc" }, { createdAt: "desc" }],
   });
 
+  const site = config || defaultStoreConfig;
+
   return (
     <div className="flex min-h-screen flex-col bg-black text-white">
-      <Navbar banner={{ text: config?.topBannerText || "FRETE GRATIS EM PALMAS - TO / ENTREGA LOCAL", visible: config?.isBannerVisible ?? true }} />
+      <Navbar banner={{ text: site.topBannerText, visible: site.isBannerVisible }} storeName={site.storeName} />
       <main className="flex-1">
         <section className="relative overflow-hidden border-b border-white/10 px-4 py-16 md:px-8 md:py-24">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(247,209,23,0.18),transparent_28%),linear-gradient(135deg,rgba(255,255,255,0.08),transparent_35%)]" />
           <div className="relative mx-auto flex max-w-7xl flex-col gap-8">
             <div className="flex max-w-3xl flex-col gap-4">
-              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Vitrine / Palmas - TO</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Vitrine / {site.city} - {site.state}</span>
               <h1 className="text-6xl font-black uppercase italic leading-[0.85] tracking-tighter md:text-9xl">
-                Compre o <span className="text-primary">drip</span> pronto
+                Vitrine <span className="text-primary">completa</span>
               </h1>
               <p className="max-w-xl text-sm font-medium leading-relaxed text-white/45 md:text-base">
-                Vitrine completa da Baggy Hype: oversized, fit certo e fechamento direto no WhatsApp.
+                Produtos organizados para escolher no site e finalizar o atendimento pelo WhatsApp.
               </p>
             </div>
             <div className="grid grid-cols-1 gap-3 border border-white/10 bg-black/50 p-3 backdrop-blur md:grid-cols-[1fr_220px_180px_auto]">
@@ -98,13 +101,13 @@ export default async function CatalogPage({ searchParams }: { searchParams: Prom
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 text-center md:flex-row md:text-left">
             <div className="flex items-center gap-4">
               <Truck size={28} />
-              <h2 className="text-3xl font-black uppercase italic tracking-tighter md:text-5xl">Frete gratis em Palmas</h2>
+              <h2 className="text-3xl font-black uppercase italic tracking-tighter md:text-5xl">Entrega combinada</h2>
             </div>
-            <p className="max-w-sm text-[10px] font-black uppercase leading-relaxed tracking-widest">Registrou no site, fechou no WhatsApp e recebeu no corre local.</p>
+            <p className="max-w-sm text-[10px] font-black uppercase leading-relaxed tracking-widest">Registrou no site, fechou no WhatsApp e recebeu conforme a operacao da loja.</p>
           </div>
         </section>
       </main>
-      <Footer />
+      <Footer config={site} />
     </div>
   );
 }

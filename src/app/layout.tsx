@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/providers/CartProvider";
+import { getSiteConfig } from "@/lib/data";
+import type { CSSProperties } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,27 +16,30 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://baggyhype.club"),
-  title: "Baggy Hype | Streetwear Palmas",
-  description: "Streetwear oversized em Palmas - TO. Pedido no site e fechamento no WhatsApp.",
-  keywords: ["streetwear", "Palmas", "Baggy Hype", "oversized", "moda masculina Palmas", "Tocantins"],
+  metadataBase: new URL("https://sualoja.com.br"),
+  title: "Nome da Loja | Loja Online",
+  description: "Loja online com pedido no site e fechamento pelo WhatsApp.",
+  keywords: ["loja online", "catalogo", "ecommerce", "WhatsApp", "vitrine"],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const config = await getSiteConfig();
+
   return (
     <html
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
+      style={{ "--color-primary": config.primaryColor } as CSSProperties}
     >
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var theme=localStorage.getItem("baggy-theme");document.documentElement.classList.toggle("light",theme==="light")}catch(e){}`,
+            __html: `try{var theme=localStorage.getItem("storefront-theme");document.documentElement.classList.toggle("light",theme==="light")}catch(e){}`,
           }}
         />
       </head>
