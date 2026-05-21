@@ -1,0 +1,11 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Keep Netlify's build Node consistent. Native deps like better-sqlite3 are sensitive to Node ABI.
+  NODE_VERSION = "20"
+  NPM_FLAGS = "--legacy-peer-deps"
+  NPM_CONFIG_LEGACY_PEER_DEPS = "true"
+  # These values are public project metadata, not credentials. Real secrets stay in Netlify env vars.
+  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL,SUPABASE_MEDIA_BUCKET"

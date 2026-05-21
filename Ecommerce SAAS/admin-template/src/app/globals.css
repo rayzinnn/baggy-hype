@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #f7d117;
+  --color-brand: #ffffff;
+  --color-surface: var(--surface);
+  --color-muted: #888888;
+  --color-black: var(--background);
+  --color-white: var(--foreground);
+  
+  /* Admin borders */
+  --radius-xl: 1rem;
+}
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+  --surface: #121212;
+  color-scheme: dark;
+}
+
+:root.light {
+  --background: #f5f2e8;
+  --foreground: #111111;
+  --surface: #ffffff;
+  color-scheme: light;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans);
+}
+
+/* Chrome-like minimalist scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+/* Utilitários Extras */
+.neon-glow {
+  box-shadow: 0 0 15px rgba(247, 209, 23, 0.36);
+}
+
+@keyframes infinite-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-infinite-scroll {
+  animation: infinite-scroll 40s linear infinite;
+}
+
+.border-text-white {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+}
