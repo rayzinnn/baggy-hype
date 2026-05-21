@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import bcrypt from "bcryptjs";
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -13,19 +12,16 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const email = process.env.ADMIN_EMAIL;
-  const password = process.env.ADMIN_PASSWORD;
 
-  if (!email || !password) {
-    throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD are required to seed.");
+  if (!email) {
+    throw new Error("ADMIN_EMAIL is required to seed.");
   }
-  const hashedPassword = await bcrypt.hash(password, 10);
 
   await prisma.adminUser.upsert({
     where: { email },
-    update: { password: hashedPassword },
+    update: {},
     create: {
       email,
-      password: hashedPassword,
     },
   });
 }

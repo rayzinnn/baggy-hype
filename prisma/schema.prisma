@@ -158,7 +158,7 @@ model AnalyticsEvent {
 model AdminUser {
   id       String @id @default(cuid())
   email    String @unique
-  password String
+  password String?
 }
 
 model SiteConfig {

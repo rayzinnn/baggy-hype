@@ -3,6 +3,7 @@
 import { adminAccessCookieName, adminRefreshCookieName, hasAdminAuthCookies } from "@/lib/admin-session";
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
+import { isAdminEmail } from "@/lib/admin-access";
 
 export async function requireAdminSession() {
   const cookieStore = await cookies();
@@ -27,5 +28,5 @@ export async function requireAdminSession() {
   if (error) return false;
 
   const { data } = await supabase.auth.getUser();
-  return Boolean(data.user);
+  return isAdminEmail(data.user?.email);
 }

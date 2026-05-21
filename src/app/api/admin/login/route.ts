@@ -3,6 +3,7 @@ import {
   adminAccessCookieName,
   adminRefreshCookieName,
 } from "@/lib/admin-session";
+import { isAdminEmail } from "@/lib/admin-access";
 import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
@@ -30,6 +31,9 @@ export async function POST(request: Request) {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error || !data.session) {
     return NextResponse.json({ error: "Credenciais invalidas." }, { status: 401 });
+  }
+  if (!(await isAdminEmail(data.user.email))) {
+    return NextResponse.json({ error: "Usuario sem permissao de admin." }, { status: 403 });
   }
 
   const response = NextResponse.json({ ok: true });
