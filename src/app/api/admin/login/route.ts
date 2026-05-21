@@ -7,19 +7,20 @@ import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
 
-// Netlify runtime env injection can be finicky; URL is not secret, so we keep a safe fallback
-// tied to the current Supabase project ref.
-const SUPABASE_URL_FALLBACK = "https://jdffqusqshiecddczwpr.supabase.co";
-
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const email = typeof body?.email === "string" ? body.email : "";
   const password = typeof body?.password === "string" ? body.password : "";
 
-  const url = process.env.SUPABASE_URL || SUPABASE_URL_FALLBACK;
+  const url = process.env.SUPABASE_URL;
   const anonKey = process.env.SUPABASE_ANON_KEY;
-  if (!anonKey) {
-    return NextResponse.json({ error: "Configuracao ausente.", missing: ["SUPABASE_ANON_KEY"] }, { status: 500 });
+  const missing = [
+    !url ? "SUPABASE_URL" : null,
+    !anonKey ? "SUPABASE_ANON_KEY" : null,
+  ].filter(Boolean);
+
+  if (!url || !anonKey) {
+    return NextResponse.json({ error: "Configuracao ausente.", missing }, { status: 500 });
   }
 
   const supabase = createClient(url, anonKey, {
