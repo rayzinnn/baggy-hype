@@ -3,8 +3,6 @@
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const themeStorageKey = "storefront-theme";
-
 export function ThemeToggle() {
   const [isLight, setIsLight] = useState(false);
 
@@ -19,7 +17,7 @@ export function ThemeToggle() {
     const nextIsLight = !isLight;
     setIsLight(nextIsLight);
     document.documentElement.classList.toggle("light", nextIsLight);
-    window.localStorage.setItem(themeStorageKey, nextIsLight ? "light" : "dark");
+    window.localStorage.setItem("baggy-theme", nextIsLight ? "light" : "dark");
   };
 
   return (

@@ -3,7 +3,6 @@ import { Navbar } from "@/components/layout/Navbar";
 import AddToCartButton from "@/components/product/AddToCartButton";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductGallery } from "@/components/product/ProductGallery";
-import { defaultStoreConfig } from "@/lib/store-config";
 import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -40,15 +39,14 @@ async function getProduct(slugOrId: string) {
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { id } = await params;
   const product = await getProduct(id);
-  const config = (await prisma.siteConfig.findUnique({ where: { id: "singleton" } })) || defaultStoreConfig;
-  if (!product) return { title: `Produto nao encontrado | ${config.storeName}` };
+  if (!product) return { title: "Produto nao encontrado | Baggy Hype" };
 
   return {
-    title: product.seoTitle || `${product.name} | ${config.storeName}`,
-    description: product.seoDescription || product.description || config.seoDescription,
+    title: product.seoTitle || `${product.name} | Baggy Hype`,
+    description: product.seoDescription || product.description || "Streetwear oversized em Palmas - TO. Pedido no site e fechamento no WhatsApp.",
     openGraph: {
       title: product.name,
-      description: product.description || `Produto disponivel em ${config.storeName}.`,
+      description: product.description || "Produto disponivel em Palmas - TO.",
       images: parseJsonList(product.images, ["/post01.jpg"]).slice(0, 1),
     },
   };
@@ -59,13 +57,13 @@ export const dynamic = "force-dynamic";
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params;
   const product = await getProduct(id);
-  const config = (await prisma.siteConfig.findUnique({ where: { id: "singleton" } })) || defaultStoreConfig;
+  const config = await prisma.siteConfig.findUnique({ where: { id: "singleton" } });
 
   if (!product) return notFound();
 
   const images = parseJsonList(product.images, ["/post01.jpg"]);
   const videos = parseJsonList(product.videos, []);
-  const waNumber = config.whatsappNumber;
+  const waNumber = config?.whatsappNumber || "5563999999999";
   const salePrice = product.promoPrice || product.price;
   const stock = product.variants.reduce((sum, variant) => sum + variant.stock, 0);
   const relatedProducts = await prisma.product.findMany({
@@ -75,12 +73,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
     take: 4,
   });
   const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(
-    `Ola, ${config.storeName}!\n\nVim pelo site e quero: *${product.name}*\nCodigo: ${product.slug || product.id}\nPreco: ${money(salePrice)}\n\nPode me ajudar com disponibilidade e entrega?`
+    `Salve Baggy Hype!\n\nVim pelo site e quero: *${product.name}*\nCodigo: ${product.slug || product.id}\nPreco: ${money(salePrice)}\n\nMe ajuda com tamanho e disponibilidade?`
   )}`;
 
   return (
     <div className="flex min-h-screen flex-col bg-black text-white">
-      <Navbar banner={{ text: config.topBannerText, visible: config.isBannerVisible }} storeName={config.storeName} />
+      <Navbar banner={{ text: config?.topBannerText || "FRETE GRATIS PARA PALMAS - TO | ENTREGA HOJE", visible: config?.isBannerVisible ?? true }} />
 
       <main className="flex-1">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-6 text-[10px] font-black uppercase tracking-widest text-white/40 md:px-8">
@@ -139,7 +137,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
             <div className="grid grid-cols-2 gap-px overflow-hidden border border-white/10 bg-white/10">
               {[
-                { icon: Truck, title: "Entrega", text: "Condicoes alinhadas no atendimento." },
+                { icon: Truck, title: "Frete gratis", text: "Entrega em Palmas quando a campanha estiver ativa." },
                 { icon: MapPin, title: "Retirada local", text: "Combine prova ou retirada pelo WhatsApp." },
                 { icon: Ruler, title: "Modelagem", text: "Oversized, conforto amplo e caimento urbano." },
                 { icon: BadgeCheck, title: "Estoque", text: stock > 0 ? `${stock} unidades disponiveis` : "Consulte reposicao" },
@@ -167,7 +165,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             {[
               ["Categoria", product.category.name],
               ["Modelagem", "Oversized"],
-              ["Entrega", `${config.city} - ${config.state}`],
+              ["Entrega", "Palmas - TO"],
               ["Checkout", "WhatsApp"],
             ].map(([label, value]) => (
               <div key={label} className="grid grid-cols-[140px_1fr] bg-white/[0.04] px-4 py-3">
@@ -208,14 +206,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <div>
               <h2 className="text-2xl font-black uppercase italic tracking-tighter">Aprovado pela banca local</h2>
               <p className="mt-3 text-sm leading-relaxed text-white/50">
-                Avaliacao editorial inicial: produto organizado, informacoes claras e atendimento rapido para tirar duvidas antes de fechar no WhatsApp.
+                Avaliacao editorial inicial: caimento amplo, tecido confortavel e atendimento rapido pra acertar o tamanho antes de fechar no WhatsApp.
               </p>
             </div>
           </div>
         </section>
       </main>
 
-      <Footer config={config} />
+      <Footer />
     </div>
   );
 }

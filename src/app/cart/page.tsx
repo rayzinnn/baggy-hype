@@ -146,8 +146,8 @@ export default function CartPage() {
                     <span className="text-white">R$ {total.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                    <span className="text-white/40">Entrega</span>
-                    <span className="text-white/50 font-bold tracking-[0.3em]">A COMBINAR</span>
+                    <span className="text-white/40">Entrega Palmas-TO</span>
+                    <span className="text-green-500 font-bold tracking-[0.3em]">GRATIS</span>
                   </div>
                   <div className="w-full h-px bg-white/10 mt-2" />
                   <div className="flex justify-between items-end">

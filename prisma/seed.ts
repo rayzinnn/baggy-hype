@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { defaultStoreConfig } from "../src/lib/store-config";
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -14,14 +13,8 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   const email = process.env.ADMIN_EMAIL;
 
-  await prisma.siteConfig.upsert({
-    where: { id: "singleton" },
-    update: {},
-    create: defaultStoreConfig,
-  });
-
   if (!email) {
-    return;
+    throw new Error("ADMIN_EMAIL is required to seed.");
   }
 
   await prisma.adminUser.upsert({

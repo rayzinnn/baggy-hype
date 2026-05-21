@@ -13,7 +13,6 @@ interface NavbarProps {
     text: string;
     visible: boolean;
   };
-  storeName?: string;
 }
 
 const links = [
@@ -23,7 +22,7 @@ const links = [
   { href: "/contact", label: "Contato" },
 ];
 
-export const Navbar = ({ banner, storeName = "Nome da Loja" }: NavbarProps) => {
+export const Navbar = ({ banner }: NavbarProps) => {
   const { count } = useCart();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -49,7 +48,7 @@ export const Navbar = ({ banner, storeName = "Nome da Loja" }: NavbarProps) => {
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
           <Link href="/" className="text-xl md:text-3xl font-black tracking-tighter uppercase italic text-white hover:text-primary transition-colors">
-            {storeName}
+            Baggy<span className="text-primary italic">Hype</span>
           </Link>
         </div>
 
@@ -97,7 +96,7 @@ export const Navbar = ({ banner, storeName = "Nome da Loja" }: NavbarProps) => {
             <input
               name="q"
               autoFocus
-              placeholder="Buscar produto, categoria, cor..."
+              placeholder="Buscar camiseta, calca, drop..."
               className="h-12 min-w-0 flex-1 bg-white/5 px-4 text-xs font-bold uppercase tracking-widest text-white outline-none placeholder:text-white/25 focus:bg-white/10"
             />
             <button className="h-12 bg-primary px-5 text-[10px] font-black uppercase tracking-widest text-black">Buscar</button>

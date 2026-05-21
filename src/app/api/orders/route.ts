@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { defaultStoreConfig } from "@/lib/store-config";
 import type { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
@@ -233,13 +232,13 @@ export async function POST(request: Request) {
       return { order, validItems, subtotal, discount, total };
     });
 
-    const config = (await prisma.siteConfig.findUnique({ where: { id: "singleton" } })) || defaultStoreConfig;
-    const whatsappNumber = config.whatsappNumber;
+    const config = await prisma.siteConfig.findUnique({ where: { id: "singleton" } });
+    const whatsappNumber = config?.whatsappNumber || "5563999999999";
     const itemsSummary = result.validItems
       .map((item) => `- *${item.name}* (${item.color || "Cor N/A"} / ${item.size || "Tam N/A"}) - Qtd: ${item.quantity} @ R$ ${item.price.toFixed(2)}`)
       .join("\n");
     const message = encodeURIComponent(
-      `Ola, ${config.storeName}!\n\nPedido #${result.order.shortId}\nCliente: ${customerName}\nTelefone: ${customerPhone}\nDocumento: ${customerDocument}\nEndereco: ${customerAddress}\n\n${itemsSummary}\n\nSubtotal: R$ ${result.subtotal.toFixed(2)}\nDesconto: R$ ${result.discount.toFixed(2)}\n*Total: R$ ${result.total.toFixed(2)}*\n\nComo prossigo com o pagamento?`
+      `Salve Baggy Hype!\n\nPedido #${result.order.shortId}\nCliente: ${customerName}\nTelefone: ${customerPhone}\nDocumento: ${customerDocument}\nEndereco: ${customerAddress}\n\n${itemsSummary}\n\nSubtotal: R$ ${result.subtotal.toFixed(2)}\nDesconto: R$ ${result.discount.toFixed(2)}\n*Total: R$ ${result.total.toFixed(2)}*\n\nComo prossigo com o pagamento?`
     );
 
     return NextResponse.json({

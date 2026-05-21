@@ -24,13 +24,12 @@ interface CartContextType {
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
-const cartStorageKey = "storefront-cart";
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>(() => {
     if (typeof window === "undefined") return [];
 
-    const saved = window.localStorage.getItem(cartStorageKey);
+    const saved = window.localStorage.getItem("baggy-cart");
     if (!saved) return [];
 
       try {
@@ -42,7 +41,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   });
 
   useEffect(() => {
-    window.localStorage.setItem(cartStorageKey, JSON.stringify(items));
+    window.localStorage.setItem("baggy-cart", JSON.stringify(items));
   }, [items]);
 
   const addItem = (item: CartItem) => {
