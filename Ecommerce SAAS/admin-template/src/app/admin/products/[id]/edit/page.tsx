@@ -35,6 +35,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   const productId = product.id;
   const images = parseJsonList(product.images, ["/post01.jpg"]).join(", ");
   const videos = parseJsonList(product.videos, []).join(", ");
+  const mainVariant = product.variants[0];
   const variantsText = product.variants
     .map((variant) => {
       const media = parseJsonList(variant.media, []).join(",");
@@ -78,7 +79,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
               <span className="text-[10px] font-black uppercase tracking-widest text-primary">Descricao</span>
               <textarea name="description" required rows={5} defaultValue={product.description || ""} className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary resize-none" />
             </label>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-6">
               <label className="flex flex-col gap-2">
                 <span className="text-[10px] font-black uppercase tracking-widest text-primary">Preco base</span>
                 <input name="price" required defaultValue={product.price.toString()} className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
@@ -90,6 +91,14 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
               <label className="flex flex-col gap-2">
                 <span className="text-[10px] font-black uppercase tracking-widest text-primary">Custo</span>
                 <input name="cost" defaultValue={money(product.cost)} className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
+              </label>
+              <label className="flex flex-col gap-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Tamanho</span>
+                <input name="mainSize" defaultValue={mainVariant?.size || ""} className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
+              </label>
+              <label className="flex flex-col gap-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Estoque</span>
+                <input name="mainStock" type="number" min="0" defaultValue={mainVariant?.stock || 0} className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
               </label>
               <label className="flex flex-col gap-2">
                 <span className="text-[10px] font-black uppercase tracking-widest text-primary">Categoria</span>

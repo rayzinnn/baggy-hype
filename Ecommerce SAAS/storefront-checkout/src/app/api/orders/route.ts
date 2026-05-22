@@ -116,7 +116,7 @@ export async function POST(request: Request) {
         if (!product || quantity === null) return null;
         if (variantId && (!variant || variant.productId !== product.id || !variant.isActive)) return null;
 
-        const price = Number(variant?.promoPrice || variant?.price || product.promoPrice || product.price);
+        const price = Number(variant?.promoPrice ?? product.promoPrice ?? variant?.price ?? product.price);
 
         return {
           productId: product.id,
@@ -127,7 +127,7 @@ export async function POST(request: Request) {
           price,
           quantity,
           categoryId: product.categoryId,
-          hasPromo: Boolean(variant?.promoPrice || product.promoPrice),
+          hasPromo: Boolean(variant?.promoPrice ?? product.promoPrice),
         };
       });
 
@@ -215,11 +215,8 @@ export async function POST(request: Request) {
 
     const config = await prisma.siteConfig.findUnique({ where: { id: "singleton" } });
     const whatsappNumber = config?.whatsappNumber || "5563999999999";
-    const itemsSummary = result.validItems
-      .map((item) => `- *${item.name}* (${item.color || "Cor N/A"} / ${item.size || "Tam N/A"}) - Qtd: ${item.quantity} @ R$ ${item.price.toFixed(2)}`)
-      .join("\n");
     const message = encodeURIComponent(
-      `Salve Baggy Hype!\n\nPedido #${result.order.shortId}\nCliente: ${customerName}\nTelefone: ${customerPhone}\nDocumento: ${customerDocument}\nEndereco: ${customerAddress}\n\n${itemsSummary}\n\nSubtotal: R$ ${result.subtotal.toFixed(2)}\nDesconto: R$ ${result.discount.toFixed(2)}\n*Total: R$ ${result.total.toFixed(2)}*\n\nComo prossigo com o pagamento?`
+      `Quero finalizar o pedido ${result.order.shortId}. Como podemos proceder?`
     );
 
     return NextResponse.json({

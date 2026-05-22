@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag, Search, Menu, User, X } from "lucide-react";
+import { ShoppingBag, Search, Menu, X } from "lucide-react";
 import { useCart } from "@/providers/CartProvider";
 import { ThemeToggle } from "./ThemeToggle";
 import { useState } from "react";
@@ -18,7 +18,6 @@ interface NavbarProps {
 const links = [
   { href: "/", label: "Home" },
   { href: "/catalog", label: "Catalogo" },
-  { href: "/drops", label: "Drops" },
   { href: "/contact", label: "Contato" },
 ];
 
@@ -62,9 +61,6 @@ export const Navbar = ({ banner }: NavbarProps) => {
               {link.label}
             </Link>
           ))}
-          <Link href="/admin/dashboard" className="hover:text-primary transition-colors text-white/40 flex items-center gap-2">
-            <User size={14} /> Admin
-          </Link>
         </div>
 
         <div className="flex items-center gap-2 md:gap-4">
@@ -120,9 +116,6 @@ export const Navbar = ({ banner }: NavbarProps) => {
                 {link.label}
               </Link>
             ))}
-            <Link href="/admin/dashboard" onClick={() => setMenuOpen(false)} className="px-4 py-4 text-xs font-black uppercase tracking-widest bg-white/5 text-white/50">
-              Admin
-            </Link>
           </div>
         </div>
       )}

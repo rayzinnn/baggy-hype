@@ -40,6 +40,8 @@ Este arquivo. Use como contexto mestre antes de mexer no template.
 - Allowlist de emails admin via tabela `AdminUser`.
 - Dashboard com metricas de carrinho, WhatsApp, vendas, faturamento, conversao e pendencias.
 - Produtos, categorias, variantes, estoque, precos, custo e midias.
+- Categorias destaque com imagem redonda, ordem manual e link para o catalogo filtrado.
+- Configuracao de hero por imagem: o texto promocional deve estar na propria arte, com CTA e link configuraveis no admin.
 - Upload de midias via Supabase Storage.
 - Pedidos com status operacional.
 - Clientes/CRM derivados apenas de pedidos pagos ou entregues.
@@ -144,8 +146,9 @@ Nunca colocar `SUPABASE_SERVICE_ROLE_KEY` em componente client.
 O frontend do cliente pode ser totalmente customizado, mas deve respeitar os contratos:
 
 - produto e variante precisam carregar estoque/preco reais do banco;
+- preco promocional do produto deve ser respeitado tambem quando ha variante sem promocao propria;
 - carrinho deve enviar `items`, `customer` e `couponCode` para `/api/orders`;
-- `/api/orders` cria pedido pendente e gera WhatsApp;
+- `/api/orders` cria pedido pendente e gera WhatsApp com mensagem curta: "Quero finalizar o pedido XYZ. Como podemos proceder?";
 - admin muda status para pago quando pagamento for confirmado;
 - CRM depende desse status.
 
@@ -156,6 +159,9 @@ O frontend do cliente pode ser totalmente customizado, mas deve respeitar os con
 - login admin funciona;
 - email nao autorizado nao acessa admin;
 - produto com variantes salva estoque;
+- produto sem variantes usa tamanho/estoque principal e cria uma variante unica;
+- categoria destaque aparece na home e filtra o catalogo ao clicar;
+- hero usa banner como imagem de fundo, sem copy em HTML sobreposta;
 - upload de midia funciona;
 - checkout cria pedido pendente;
 - pedido pago cria cliente;

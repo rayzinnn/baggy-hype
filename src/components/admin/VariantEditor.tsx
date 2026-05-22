@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Image as ImageIcon, Loader2, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 
 type VariantRow = {
@@ -28,6 +28,7 @@ function parseInitial(value: string): VariantRow[] {
 
 export function VariantEditor({ initialValue = "" }: { initialValue?: string }) {
   const [rows, setRows] = useState<VariantRow[]>(() => parseInitial(initialValue));
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
   const serialized = useMemo(
     () =>
       rows
@@ -49,6 +50,55 @@ export function VariantEditor({ initialValue = "" }: { initialValue?: string }) 
       [next[index], next[target]] = [next[target], next[index]];
       return next;
     });
+  };
+
+  const uploadVariantMedia = async (index: number, files: FileList) => {
+    setUploadingIndex(index);
+    try {
+      const signResponse = await fetch("/api/media/sign", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          files: [...files].map((file) => ({
+            filename: file.name,
+            contentType: file.type,
+            size: file.size,
+            kind: file.type.startsWith("video/") ? "video" : "image",
+          })),
+        }),
+      });
+
+      if (!signResponse.ok) throw new Error("Falha ao iniciar upload.");
+      const signed = (await signResponse.json()) as { uploads: { signedUrl: string; publicUrl: string }[] };
+      const uploaded: string[] = [];
+
+      for (let fileIndex = 0; fileIndex < signed.uploads.length; fileIndex += 1) {
+        const upload = signed.uploads[fileIndex];
+        const file = files[fileIndex];
+        const put = await fetch(upload.signedUrl, {
+          method: "PUT",
+          headers: { "Content-Type": file.type || "application/octet-stream" },
+          body: file,
+        });
+        if (!put.ok) throw new Error("Falha ao enviar arquivo.");
+        uploaded.push(upload.publicUrl);
+      }
+
+      setRows((current) =>
+        current.map((row, rowIndex) => {
+          if (rowIndex !== index) return row;
+          const currentMedia = row.media
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean);
+          return { ...row, media: [...currentMedia, ...uploaded].join(", ") };
+        })
+      );
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Erro ao enviar midia da variante.");
+    } finally {
+      setUploadingIndex(null);
+    }
   };
 
   const fields: { key: keyof VariantRow; label: string; placeholder: string; type?: string; className?: string }[] = [
@@ -100,15 +150,42 @@ export function VariantEditor({ initialValue = "" }: { initialValue?: string }) 
               {fields.map((field) => (
                 <label key={field.key} className={`flex flex-col gap-2 ${field.className || ""}`}>
                   <span className="text-[9px] font-black uppercase tracking-[0.18em] text-primary">{field.label}</span>
-                  <input
-                    value={row[field.key]}
-                    type={field.type || "text"}
-                    step={field.type === "number" ? "0.01" : undefined}
-                    min={field.key === "stock" ? "0" : undefined}
-                    placeholder={field.placeholder}
-                    onChange={(event) => updateRow(index, field.key, event.target.value)}
-                    className="w-full bg-black/50 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white outline-none focus:border-primary placeholder:text-white/15"
-                  />
+                  {field.key === "media" ? (
+                    <div className="flex gap-2">
+                      <input
+                        value={row[field.key]}
+                        type="text"
+                        placeholder={field.placeholder}
+                        onChange={(event) => updateRow(index, field.key, event.target.value)}
+                        className="w-full bg-black/50 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white outline-none focus:border-primary placeholder:text-white/15"
+                      />
+                      <label className="h-[54px] w-[54px] shrink-0 rounded-2xl bg-white text-black grid place-items-center hover:bg-primary transition-all cursor-pointer">
+                        <input
+                          type="file"
+                          accept="image/*,video/*"
+                          multiple
+                          className="sr-only"
+                          onChange={(event) => {
+                            if (!event.target.files || event.target.files.length === 0) return;
+                            void uploadVariantMedia(index, event.target.files);
+                            event.target.value = "";
+                          }}
+                          disabled={uploadingIndex !== null}
+                        />
+                        {uploadingIndex === index ? <Loader2 size={16} className="animate-spin" /> : <ImageIcon size={16} />}
+                      </label>
+                    </div>
+                  ) : (
+                    <input
+                      value={row[field.key]}
+                      type={field.type || "text"}
+                      step={field.type === "number" ? "0.01" : undefined}
+                      min={field.key === "stock" ? "0" : undefined}
+                      placeholder={field.placeholder}
+                      onChange={(event) => updateRow(index, field.key, event.target.value)}
+                      className="w-full bg-black/50 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white outline-none focus:border-primary placeholder:text-white/15"
+                    />
+                  )}
                 </label>
               ))}
             </div>

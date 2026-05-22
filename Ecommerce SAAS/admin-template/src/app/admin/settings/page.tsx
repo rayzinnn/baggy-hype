@@ -1,4 +1,5 @@
 import { updateSiteConfig } from "@/lib/actions/site-config";
+import { MediaUploaderField } from "@/components/admin/MediaUploaderField";
 import { Image as ImageIcon, Layout, Save, Smartphone } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 
@@ -9,11 +10,16 @@ export default async function SettingsPage() {
     where: { id: "singleton" },
   }) || {
     topBannerText: "FRETE GRATIS EM PALMAS - TO / ENTREGA LOCAL",
-    whatsappNumber: "5500000000000",
+    whatsappNumber: "5563999999999",
     isBannerVisible: true,
     heroImage1: "/post01.jpg",
     heroImage2: "/post01.jpg",
     heroImage3: "/post01.jpg",
+    heroCtaLabel: "Ver catalogo",
+    heroCtaHref: "/catalog",
+    heroSecondaryLabel: "Falar no WhatsApp",
+    heroSecondaryHref: "/contact",
+    heroLinkHref: "/catalog",
   };
 
   return (
@@ -60,7 +66,7 @@ export default async function SettingsPage() {
               type="text"
               defaultValue={config.whatsappNumber}
               className="w-full bg-black border border-white/10 rounded-2xl py-4 px-6 text-sm text-white font-black tracking-widest focus:border-primary outline-none transition-all"
-              placeholder="5500000000000"
+              placeholder="5563999999999"
             />
           </label>
         </div>
@@ -69,24 +75,39 @@ export default async function SettingsPage() {
           <div className="bg-surface p-5 md:p-8 rounded-3xl border border-white/5 shadow-2xl flex flex-col gap-6">
             <div className="flex items-center gap-3 mb-2">
               <ImageIcon className="text-primary" size={20} />
-              <h3 className="text-sm font-black uppercase tracking-widest italic text-white">Imagens da home</h3>
+              <h3 className="text-sm font-black uppercase tracking-widest italic text-white">Hero da home</h3>
             </div>
 
             {[
-              ["heroImage1", "Imagem 1 (Hero Main)", config.heroImage1],
-              ["heroImage2", "Imagem 2 (Variacao)", config.heroImage2],
-              ["heroImage3", "Imagem 3 (Variacao)", config.heroImage3],
+              ["heroImage1", "Banner principal", config.heroImage1],
+              ["heroImage2", "Banner alternativo 1", config.heroImage2],
+              ["heroImage3", "Banner alternativo 2", config.heroImage3],
             ].map(([name, label, value]) => (
-              <label key={name} className="flex flex-col gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-white/40 px-1">{label}</span>
-                <input
-                  name={name}
-                  type="text"
-                  defaultValue={value}
-                  className="w-full bg-black border border-white/10 rounded-2xl py-4 px-6 text-xs text-white/60 font-mono focus:border-primary outline-none transition-all"
-                />
-              </label>
+              <MediaUploaderField key={name} productId="" name={name} label={label} initialValue={value} mediaType="IMAGE" accept="image/*" commitToDb={false} multiple={false} />
             ))}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              <label className="flex flex-col gap-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-white/40 px-1">Texto CTA principal</span>
+                <input name="heroCtaLabel" defaultValue={config.heroCtaLabel} className="w-full bg-black border border-white/10 rounded-2xl py-4 px-6 text-sm text-white focus:border-primary outline-none transition-all" />
+              </label>
+              <label className="flex flex-col gap-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-white/40 px-1">URL CTA principal</span>
+                <input name="heroCtaHref" defaultValue={config.heroCtaHref} className="w-full bg-black border border-white/10 rounded-2xl py-4 px-6 text-sm text-white focus:border-primary outline-none transition-all" />
+              </label>
+              <label className="flex flex-col gap-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-white/40 px-1">Texto CTA secundario</span>
+                <input name="heroSecondaryLabel" defaultValue={config.heroSecondaryLabel} className="w-full bg-black border border-white/10 rounded-2xl py-4 px-6 text-sm text-white focus:border-primary outline-none transition-all" />
+              </label>
+              <label className="flex flex-col gap-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-white/40 px-1">URL CTA secundario</span>
+                <input name="heroSecondaryHref" defaultValue={config.heroSecondaryHref} className="w-full bg-black border border-white/10 rounded-2xl py-4 px-6 text-sm text-white focus:border-primary outline-none transition-all" />
+              </label>
+              <label className="md:col-span-2 flex flex-col gap-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-white/40 px-1">URL ao clicar no banner</span>
+                <input name="heroLinkHref" defaultValue={config.heroLinkHref} className="w-full bg-black border border-white/10 rounded-2xl py-4 px-6 text-sm text-white focus:border-primary outline-none transition-all" />
+              </label>
+            </div>
           </div>
 
           <button

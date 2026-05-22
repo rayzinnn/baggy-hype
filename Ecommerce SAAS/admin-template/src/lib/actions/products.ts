@@ -88,16 +88,25 @@ function parseVariants(value: string) {
     }));
 }
 
-async function syncVariants(productId: string, variantsInput: string, fallbackPrice: number, fallbackCost: number | null, fallbackImages: string[]) {
+async function syncVariants(
+  productId: string,
+  variantsInput: string,
+  fallbackPrice: number,
+  fallbackPromoPrice: number | null,
+  fallbackCost: number | null,
+  fallbackImages: string[],
+  fallbackSize: string,
+  fallbackStock: number
+) {
   const variants = parseVariants(variantsInput);
 
   if (variants.length === 0) {
     variants.push({
       color: "Unica",
-      size: "Unico",
-      stock: 0,
+      size: fallbackSize || "Unico",
+      stock: fallbackStock,
       price: fallbackPrice,
-      promoPrice: null,
+      promoPrice: fallbackPromoPrice,
       cost: fallbackCost,
       media: JSON.stringify(fallbackImages),
     });
@@ -127,6 +136,8 @@ export async function createProduct(formData: FormData): Promise<ProductActionSt
     const price = parseMoney(getString(formData, "price"));
     const promoPrice = parseMoney(getString(formData, "promoPrice"));
     const cost = parseMoney(getString(formData, "cost"));
+    const mainSize = getString(formData, "mainSize");
+    const mainStock = Math.max(Number.parseInt(getString(formData, "mainStock"), 10) || 0, 0);
     const categoryId = getString(formData, "categoryId");
     const images = parseList(getString(formData, "images"), ["/post01.jpg"]);
     const videos = parseList(getString(formData, "videos"), []);
@@ -148,7 +159,7 @@ export async function createProduct(formData: FormData): Promise<ProductActionSt
         categoryId,
         images: JSON.stringify(images),
         videos: JSON.stringify(videos),
-        sizes: "[]",
+        sizes: JSON.stringify(mainSize ? [mainSize] : []),
         seoTitle: seoTitle || null,
         seoDescription: seoDescription || null,
         isFeatured,
@@ -156,7 +167,7 @@ export async function createProduct(formData: FormData): Promise<ProductActionSt
     });
 
     await syncProductMedia(product.id, images, videos);
-    await syncVariants(product.id, getString(formData, "variants"), price, cost, images);
+    await syncVariants(product.id, getString(formData, "variants"), price, promoPrice, cost, images, mainSize, mainStock);
 
     revalidatePath("/admin/products");
     revalidatePath("/");
@@ -177,6 +188,8 @@ export async function updateProduct(productId: string, formData: FormData): Prom
     const price = parseMoney(getString(formData, "price"));
     const promoPrice = parseMoney(getString(formData, "promoPrice"));
     const cost = parseMoney(getString(formData, "cost"));
+    const mainSize = getString(formData, "mainSize");
+    const mainStock = Math.max(Number.parseInt(getString(formData, "mainStock"), 10) || 0, 0);
     const categoryId = getString(formData, "categoryId");
     const images = parseList(getString(formData, "images"), ["/post01.jpg"]);
     const videos = parseList(getString(formData, "videos"), []);
@@ -199,6 +212,7 @@ export async function updateProduct(productId: string, formData: FormData): Prom
         categoryId,
         images: JSON.stringify(images),
         videos: JSON.stringify(videos),
+        sizes: JSON.stringify(mainSize ? [mainSize] : []),
         seoTitle: seoTitle || null,
         seoDescription: seoDescription || null,
         isFeatured,
@@ -206,7 +220,7 @@ export async function updateProduct(productId: string, formData: FormData): Prom
     });
 
     await syncProductMedia(productId, images, videos);
-    await syncVariants(productId, getString(formData, "variants"), price, cost, images);
+    await syncVariants(productId, getString(formData, "variants"), price, promoPrice, cost, images, mainSize, mainStock);
 
     revalidatePath("/admin/products");
     revalidatePath(`/product/${productId}`);

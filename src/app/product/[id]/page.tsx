@@ -111,7 +111,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <AddToCartButton product={{
               id: product.id,
               name: product.name,
-              price: Number(salePrice),
+              price: Number(product.price),
+              promoPrice: product.promoPrice ? Number(product.promoPrice) : null,
               images: product.images,
               sizes: product.sizes,
               variants: product.variants.map((variant) => ({

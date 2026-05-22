@@ -17,6 +17,9 @@ enum MediaType {
 model Category {
   id       String     @id @default(cuid())
   name     String     @unique
+  imageUrl String?
+  isFeatured Boolean  @default(false)
+  sortOrder Int       @default(0)
   parentId String?
   parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
   children Category[] @relation("CategoryTree")
@@ -169,5 +172,10 @@ model SiteConfig {
   heroImage1       String @default("/post01.jpg")
   heroImage2       String @default("/post01.jpg")
   heroImage3       String @default("/post01.jpg")
+  heroCtaLabel     String @default("Ver catalogo")
+  heroCtaHref      String @default("/catalog")
+  heroSecondaryLabel String @default("Falar no WhatsApp")
+  heroSecondaryHref String @default("/contact")
+  heroLinkHref     String @default("/catalog")
   updatedAt        DateTime @updatedAt
 }

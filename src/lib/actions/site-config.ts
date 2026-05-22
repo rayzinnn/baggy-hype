@@ -13,6 +13,11 @@ export async function updateSiteConfig(formData: FormData) {
   const heroImage1 = String(formData.get("heroImage1") || "").trim();
   const heroImage2 = String(formData.get("heroImage2") || "").trim();
   const heroImage3 = String(formData.get("heroImage3") || "").trim();
+  const heroCtaLabel = String(formData.get("heroCtaLabel") || "").trim();
+  const heroCtaHref = String(formData.get("heroCtaHref") || "").trim();
+  const heroSecondaryLabel = String(formData.get("heroSecondaryLabel") || "").trim();
+  const heroSecondaryHref = String(formData.get("heroSecondaryHref") || "").trim();
+  const heroLinkHref = String(formData.get("heroLinkHref") || "").trim();
 
   await prisma.siteConfig.upsert({
     where: { id: "singleton" },
@@ -23,6 +28,11 @@ export async function updateSiteConfig(formData: FormData) {
       heroImage1: heroImage1 || undefined,
       heroImage2: heroImage2 || undefined,
       heroImage3: heroImage3 || undefined,
+      heroCtaLabel: heroCtaLabel || "Ver catalogo",
+      heroCtaHref: heroCtaHref || "/catalog",
+      heroSecondaryLabel: heroSecondaryLabel || "Falar no WhatsApp",
+      heroSecondaryHref: heroSecondaryHref || "/contact",
+      heroLinkHref: heroLinkHref || "/catalog",
     },
     create: {
       id: "singleton",
@@ -32,6 +42,11 @@ export async function updateSiteConfig(formData: FormData) {
       heroImage1: heroImage1 || "/post01.jpg",
       heroImage2: heroImage2 || "/post01.jpg",
       heroImage3: heroImage3 || "/post01.jpg",
+      heroCtaLabel: heroCtaLabel || "Ver catalogo",
+      heroCtaHref: heroCtaHref || "/catalog",
+      heroSecondaryLabel: heroSecondaryLabel || "Falar no WhatsApp",
+      heroSecondaryHref: heroSecondaryHref || "/contact",
+      heroLinkHref: heroLinkHref || "/catalog",
     },
   });
 

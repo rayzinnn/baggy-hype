@@ -29,8 +29,7 @@ export const Footer = () => {
           <h4 className="font-black uppercase text-xs tracking-widest text-primary">Navegacao</h4>
           <ul className="flex flex-col gap-3 text-sm font-bold uppercase tracking-tight text-white/50">
             <li><Link href="/catalog" className="hover:text-white transition-colors">Vitrine completa</Link></li>
-            <li><Link href="/drops" className="hover:text-white transition-colors">Lancamentos</Link></li>
-            <li><Link href="/admin" className="hover:text-white transition-colors">Painel Admin</Link></li>
+            <li><Link href="/contact" className="hover:text-white transition-colors">Atendimento</Link></li>
           </ul>
         </div>
 

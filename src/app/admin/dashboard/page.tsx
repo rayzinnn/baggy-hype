@@ -1,7 +1,7 @@
 import { DateRangeFilter } from "@/components/admin/DateRangeFilter";
 import { dayKey, parseLocalDateRange } from "@/lib/date-range";
 import { prisma } from "@/lib/prisma";
-import { CheckCircle2, Clock3, DollarSign, MousePointerClick, Package, ShoppingCart, TrendingUp } from "lucide-react";
+import { CheckCircle2, Clock3, DollarSign, MousePointerClick, ShoppingCart, TrendingUp } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -53,8 +53,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const range = parseLocalDateRange(params.from, params.to, 30);
   const dateWhere = { createdAt: { gte: range.from, lte: range.to } };
 
-  const [productCount, orders, cartEvents, whatsappEvents] = await Promise.all([
-    prisma.product.count(),
+  const [orders, cartEvents, whatsappEvents] = await Promise.all([
     prisma.order.findMany({ where: dateWhere, orderBy: { createdAt: "asc" } }),
     prisma.analyticsEvent.findMany({ where: { eventType: "CART_ADD", ...dateWhere } }),
     prisma.analyticsEvent.findMany({ where: { eventType: "WHATSAPP_CHECKOUT", ...dateWhere } }),
@@ -116,8 +115,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     { name: "Cliques WhatsApp", value: whatsappEvents.length, hint: "checkout iniciado", icon: MousePointerClick, color: "text-primary" },
     { name: "Vendas pagas", value: paidOrders.length, hint: `${pendingOrders.length} intencoes abertas`, icon: CheckCircle2, color: "text-green-500" },
     { name: "Faturamento", value: formatCurrency(revenue), hint: `ticket ${formatCurrency(averageTicket)}`, icon: DollarSign, color: "text-green-400" },
-    { name: "Conversao WA", value: `${conversion.toFixed(1)}%`, hint: "vendas / cliques", icon: TrendingUp, color: "text-white" },
-    { name: "Produtos", value: productCount, hint: "catalogo ativo", icon: Package, color: "text-primary" },
+    { name: "Conversao WA", value: `${conversion.toFixed(1)}%`, hint: "vendas / cliques", icon: TrendingUp, color: "text-white dark:text-white" },
     { name: "Pendentes", value: pendingOrders.length, hint: "sem pagamento confirmado", icon: Clock3, color: "text-orange-300" },
   ];
 
@@ -163,14 +161,14 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
           </form>
         </div>
         <div className="overflow-x-auto">
-          <div className="relative min-w-[760px] h-[300px] rounded-[1.75rem] bg-black/25 border border-white/5 px-4 py-3">
+          <div className="relative min-w-[760px] h-[340px] rounded-[1.75rem] bg-black/80 dark:bg-black/25 border border-black/10 dark:border-white/5 px-5 py-5">
             <svg viewBox="0 0 760 260" className="h-full w-full" role="img" aria-label={`Grafico de ${metricLabels[selectedMetric]}`}>
               {[0, 1, 2, 3].map((tick) => {
                 const y = 214 - tick * 62;
                 return (
                   <g key={tick}>
-                    <line x1="26" y1={y} x2="734" y2={y} stroke="rgba(255,255,255,0.07)" />
-                    <text x="0" y={y + 4} fill="rgba(255,255,255,0.28)" fontSize="10" fontWeight="700">{formatShortValue((maxChartValue / 3) * tick, selectedMetric)}</text>
+                    <line x1="26" y1={y} x2="734" y2={y} stroke="rgba(255,255,255,0.12)" />
+                    <text x="0" y={y + 4} fill="rgba(255,255,255,0.7)" fontSize="10" fontWeight="700">{formatShortValue((maxChartValue / 3) * tick, selectedMetric)}</text>
                   </g>
                 );
               })}
@@ -196,7 +194,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               {chartData.map(([date], index) => {
                 if (chartData.length > 12 && index % Math.ceil(chartData.length / 8) !== 0 && index !== chartData.length - 1) return null;
                 const x = chartData.length === 1 ? 380 : 26 + (index / (chartData.length - 1)) * 708;
-                return <text key={date} x={x} y="248" textAnchor="middle" fill="rgba(255,255,255,0.34)" fontSize="10" fontWeight="800">{date.slice(5)}</text>;
+                return <text key={date} x={x} y="248" textAnchor="middle" fill="rgba(255,255,255,0.82)" fontSize="10" fontWeight="800">{date.slice(5)}</text>;
               })}
             </svg>
             <div className="absolute left-1/2 top-11 -translate-x-1/2 rounded-2xl bg-white text-black px-5 py-4 shadow-2xl min-w-48">

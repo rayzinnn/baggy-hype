@@ -56,7 +56,7 @@ export function NewProductForm({ categories }: { categories: CategoryOption[] })
               <span className="text-[10px] font-black uppercase tracking-widest text-primary">Descricao</span>
               <textarea name="description" required rows={5} className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary resize-none" />
             </label>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-6">
               <label className="flex flex-col gap-2">
                 <span className="text-[10px] font-black uppercase tracking-widest text-primary">Preco base</span>
                 <input name="price" required placeholder="159.90" className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
@@ -68,6 +68,14 @@ export function NewProductForm({ categories }: { categories: CategoryOption[] })
               <label className="flex flex-col gap-2">
                 <span className="text-[10px] font-black uppercase tracking-widest text-primary">Custo</span>
                 <input name="cost" placeholder="70.00" className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
+              </label>
+              <label className="flex flex-col gap-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Tamanho</span>
+                <input name="mainSize" placeholder="G" className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
+              </label>
+              <label className="flex flex-col gap-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Estoque</span>
+                <input name="mainStock" type="number" min="0" placeholder="0" className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
               </label>
               <label className="flex flex-col gap-2">
                 <span className="text-[10px] font-black uppercase tracking-widest text-primary">Categoria</span>

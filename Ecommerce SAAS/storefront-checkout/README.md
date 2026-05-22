@@ -9,6 +9,12 @@ Ela nao e importada automaticamente pelo `admin-template`. Use como referencia o
 - `src/app/cart/page.tsx`: pagina de carrinho/checkout.
 - `src/app/api/orders/route.ts`: API que cria pedido pendente, baixa estoque e gera link do WhatsApp.
 
+Regra de preco atual:
+
+- Preco promocional da variante vence tudo.
+- Se a variante nao tiver promocao propria, o preco promocional do produto deve ser usado.
+- Se nao houver promocao, usa o preco da variante ou o preco base do produto.
+
 Regra de CRM atual:
 
 - O checkout cria uma intencao de pedido com status `PENDING`.

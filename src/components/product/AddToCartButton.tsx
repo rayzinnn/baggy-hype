@@ -9,6 +9,7 @@ interface AddToCartButtonProps {
         id: string;
         name: string;
         price: number;
+        promoPrice?: number | null;
         images: string;
         sizes: string;
         variants?: {
@@ -53,7 +54,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
         }
 
         const variantImages = selectedVariant ? parseJsonList(selectedVariant.media, images) : images;
-        const price = selectedVariant?.promoPrice || selectedVariant?.price || product.price;
+        const price = selectedVariant?.promoPrice ?? product.promoPrice ?? selectedVariant?.price ?? product.price;
 
         addItem({
             id: product.id,

@@ -39,6 +39,7 @@ export function MediaUploaderField({
   accept,
   mediaType,
   commitToDb = true,
+  multiple = true,
 }: {
   productId: string;
   name: string;
@@ -47,6 +48,7 @@ export function MediaUploaderField({
   accept: string;
   mediaType: "IMAGE" | "VIDEO";
   commitToDb?: boolean;
+  multiple?: boolean;
 }) {
   const [items, setItems] = useState<MediaItem[]>(() => parseInitial(initialValue).filter((item) => item.type === mediaType));
   const [draft, setDraft] = useState("");
@@ -109,7 +111,7 @@ export function MediaUploaderField({
         uploaded.push({ id: committed?.media.id, url: upload.publicUrl, type: mediaType });
       }
 
-      setItems((current) => [...current, ...uploaded]);
+      setItems((current) => (multiple ? [...current, ...uploaded] : uploaded.slice(0, 1)));
     } catch (error) {
       alert(error instanceof Error ? error.message : "Erro ao enviar midia.");
     } finally {
@@ -145,7 +147,8 @@ export function MediaUploaderField({
             const nextOrder = items.length;
             try {
               const committed = await commit(url, nextOrder);
-              setItems((current) => [...current, { id: committed?.media.id, url, type: mediaType }]);
+              const nextItem = { id: committed?.media.id, url, type: mediaType };
+              setItems((current) => (multiple ? [...current, nextItem] : [nextItem]));
             } catch {
               alert("Falha ao registrar midia.");
             }
@@ -159,7 +162,7 @@ export function MediaUploaderField({
           <input
             type="file"
             accept={accept}
-            multiple
+            multiple={multiple}
             className="sr-only"
             onChange={(event) => {
               if (!event.target.files || event.target.files.length === 0) return;
