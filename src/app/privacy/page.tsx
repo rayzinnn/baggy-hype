@@ -16,7 +16,7 @@ export default async function PrivacyPage() {
           <h1 className="text-5xl font-black uppercase italic leading-none tracking-tighter md:text-8xl">Dados do pedido</h1>
         </header>
         <div className="grid gap-4 text-sm leading-relaxed text-white/55">
-          <p>Coletamos nome, contato, documento e endereco apenas para registrar pedidos, organizar entregas e continuar o atendimento via WhatsApp.</p>
+          <p>Coletamos nome, contato, documento e endereço apenas para registrar pedidos, organizar entregas e continuar o atendimento via WhatsApp.</p>
           <p>Os dados ficam no painel administrativo da Baggy Hype e nao sao vendidos. O acesso administrativo deve permanecer restrito a pessoas autorizadas.</p>
           <p>Para correcao ou remocao de dados, fale com a gente no canal oficial de atendimento.</p>
         </div>

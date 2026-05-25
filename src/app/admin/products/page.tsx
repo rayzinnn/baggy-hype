@@ -97,7 +97,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
                     </div>
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-[9px] font-black uppercase tracking-widest">
-                    <span className="rounded-2xl bg-black/50 border border-white/5 p-3 text-white/40">Preco<br /><b className="text-white text-xs">R$ {sellPrice.toFixed(2)}</b></span>
+                    <span className="rounded-2xl bg-black/50 border border-white/5 p-3 text-white/40">Preço<br /><b className="text-white text-xs">R$ {sellPrice.toFixed(2)}</b></span>
                     <span className="rounded-2xl bg-black/50 border border-white/5 p-3 text-white/40">Estoque<br /><b className={stock > 0 ? "text-primary text-xs" : "text-red-500 text-xs"}>{stock}</b></span>
                     <span className="rounded-2xl bg-black/50 border border-white/5 p-3 text-white/40">Margem<br /><b className="text-white text-xs">{margin === null ? "-" : `${margin.toFixed(1)}%`}</b></span>
                   </div>
@@ -114,7 +114,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
             <tr>
               <th className="px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Produto</th>
               <th className="px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Categoria</th>
-              <th className="px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Preco</th>
+              <th className="px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Preço</th>
               <th className="px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Variantes</th>
               <th className="px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Estoque</th>
               <th className="px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Margem</th>

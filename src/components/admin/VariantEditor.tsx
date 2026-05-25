@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowDown, ArrowUp, Image as ImageIcon, Loader2, Plus, Trash2 } from "lucide-react";
+import Image from "next/image";
+import { ArrowDown, ArrowUp, Image as ImageIcon, Loader2, Plus, Trash2, Video } from "lucide-react";
 import { useMemo, useState } from "react";
 
 type VariantRow = {
@@ -26,6 +27,17 @@ function parseInitial(value: string): VariantRow[] {
   return rows.length > 0 ? rows : [{ color: "", size: "", stock: "", price: "", promoPrice: "", cost: "", media: "" }];
 }
 
+function mediaItems(value: string) {
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function isVideoUrl(url: string) {
+  return /\.(mp4|mov|webm)(\?|$)/i.test(url) || /youtube\.com|youtu\.be|vimeo\.com/i.test(url);
+}
+
 export function VariantEditor({ initialValue = "" }: { initialValue?: string }) {
   const [rows, setRows] = useState<VariantRow[]>(() => parseInitial(initialValue));
   const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
@@ -40,6 +52,23 @@ export function VariantEditor({ initialValue = "" }: { initialValue?: string }) 
 
   const updateRow = (index: number, key: keyof VariantRow, value: string) => {
     setRows((current) => current.map((row, rowIndex) => (rowIndex === index ? { ...row, [key]: value } : row)));
+  };
+
+  const updateMedia = (index: number, urls: string[]) => {
+    updateRow(index, "media", urls.join(", "));
+  };
+
+  const moveMedia = (rowIndex: number, mediaIndex: number, direction: -1 | 1) => {
+    setRows((current) =>
+      current.map((row, index) => {
+        if (index !== rowIndex) return row;
+        const urls = mediaItems(row.media);
+        const target = mediaIndex + direction;
+        if (target < 0 || target >= urls.length) return row;
+        [urls[mediaIndex], urls[target]] = [urls[target], urls[mediaIndex]];
+        return { ...row, media: urls.join(", ") };
+      })
+    );
   };
 
   const move = (index: number, direction: -1 | 1) => {
@@ -95,7 +124,7 @@ export function VariantEditor({ initialValue = "" }: { initialValue?: string }) 
         })
       );
     } catch (error) {
-      alert(error instanceof Error ? error.message : "Erro ao enviar midia da variante.");
+      alert(error instanceof Error ? error.message : "Erro ao enviar mídia da variante.");
     } finally {
       setUploadingIndex(null);
     }
@@ -105,10 +134,10 @@ export function VariantEditor({ initialValue = "" }: { initialValue?: string }) 
     { key: "color", label: "Cor", placeholder: "Preto" },
     { key: "size", label: "Tamanho", placeholder: "G" },
     { key: "stock", label: "Estoque", placeholder: "0", type: "number" },
-    { key: "price", label: "Preco", placeholder: "199.90", type: "number" },
-    { key: "promoPrice", label: "Preco promo", placeholder: "179.90", type: "number" },
+    { key: "price", label: "Preço", placeholder: "199.90", type: "number" },
+    { key: "promoPrice", label: "Preço promo", placeholder: "179.90", type: "number" },
     { key: "cost", label: "Custo", placeholder: "80.00", type: "number" },
-    { key: "media", label: "Midias da variante", placeholder: "URLs separadas por virgula", className: "md:col-span-2 xl:col-span-3" },
+    { key: "media", label: "Mídias da variante", placeholder: "", className: "md:col-span-2 xl:col-span-3" },
   ];
 
   return (
@@ -117,7 +146,7 @@ export function VariantEditor({ initialValue = "" }: { initialValue?: string }) 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h3 className="text-lg font-black uppercase italic tracking-tighter">Variantes</h3>
-          <p className="text-[9px] font-bold uppercase tracking-widest text-white/30">Cor, tamanho, estoque e precificacao por opcao.</p>
+          <p className="text-[9px] font-bold uppercase tracking-widest text-white/30">Cor, tamanho, estoque e precificação por opção.</p>
         </div>
         <button type="button" onClick={() => setRows((current) => [...current, { color: "", size: "", stock: "0", price: "", promoPrice: "", cost: "", media: "" }])} className="px-4 py-3 bg-white text-black rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary transition-all flex items-center justify-center gap-2">
           <Plus size={14} />
@@ -151,15 +180,8 @@ export function VariantEditor({ initialValue = "" }: { initialValue?: string }) 
                 <label key={field.key} className={`flex flex-col gap-2 ${field.className || ""}`}>
                   <span className="text-[9px] font-black uppercase tracking-[0.18em] text-primary">{field.label}</span>
                   {field.key === "media" ? (
-                    <div className="flex gap-2">
-                      <input
-                        value={row[field.key]}
-                        type="text"
-                        placeholder={field.placeholder}
-                        onChange={(event) => updateRow(index, field.key, event.target.value)}
-                        className="w-full bg-black/50 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white outline-none focus:border-primary placeholder:text-white/15"
-                      />
-                      <label className="h-[54px] w-[54px] shrink-0 rounded-2xl bg-white text-black grid place-items-center hover:bg-primary transition-all cursor-pointer">
+                    <div className="rounded-3xl border border-white/10 bg-black/30 p-3">
+                      <label className="flex min-h-28 cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-5 text-center transition-all hover:border-primary hover:bg-primary/10">
                         <input
                           type="file"
                           accept="image/*,video/*"
@@ -172,8 +194,46 @@ export function VariantEditor({ initialValue = "" }: { initialValue?: string }) 
                           }}
                           disabled={uploadingIndex !== null}
                         />
-                        {uploadingIndex === index ? <Loader2 size={16} className="animate-spin" /> : <ImageIcon size={16} />}
+                        <span className="grid h-10 w-10 place-items-center rounded-full bg-white text-black">
+                          {uploadingIndex === index ? <Loader2 size={16} className="animate-spin" /> : <ImageIcon size={16} />}
+                        </span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white/55">Enviar mídias</span>
                       </label>
+                      <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                        {mediaItems(row.media).length === 0 ? (
+                          <div className="col-span-full rounded-2xl border border-white/5 bg-black/40 p-4 text-center text-[10px] font-bold uppercase tracking-widest text-white/25">
+                            Nenhuma mídia da variante.
+                          </div>
+                        ) : (
+                          mediaItems(row.media).map((url, mediaIndex, urls) => (
+                            <div key={`${url}-${mediaIndex}`} className="overflow-hidden rounded-2xl border border-white/10 bg-black/60">
+                              <div className="relative aspect-[4/5] bg-black">
+                                {isVideoUrl(url) ? (
+                                  <div className="flex h-full w-full items-center justify-center text-white/40">
+                                    <Video size={26} />
+                                  </div>
+                                ) : (
+                                  <Image src={url} alt={`Mídia da variante ${mediaIndex + 1}`} fill sizes="140px" className="object-cover" />
+                                )}
+                                <span className="absolute left-2 top-2 rounded-full bg-primary px-2 py-1 text-[9px] font-black text-black">
+                                  {String(mediaIndex + 1).padStart(2, "0")}
+                                </span>
+                              </div>
+                              <div className="flex justify-between gap-1 p-2">
+                                <button type="button" onClick={() => moveMedia(index, mediaIndex, -1)} disabled={mediaIndex === 0} className="grid h-8 w-8 place-items-center rounded-lg bg-white/5 text-white/60 disabled:opacity-25">
+                                  <ArrowUp size={12} />
+                                </button>
+                                <button type="button" onClick={() => moveMedia(index, mediaIndex, 1)} disabled={mediaIndex === urls.length - 1} className="grid h-8 w-8 place-items-center rounded-lg bg-white/5 text-white/60 disabled:opacity-25">
+                                  <ArrowDown size={12} />
+                                </button>
+                                <button type="button" onClick={() => updateMedia(index, urls.filter((_, itemIndex) => itemIndex !== mediaIndex))} className="grid h-8 w-8 place-items-center rounded-lg bg-white/5 text-white/60 hover:bg-red-500 hover:text-white">
+                                  <Trash2 size={12} />
+                                </button>
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
                     </div>
                   ) : (
                     <input

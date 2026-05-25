@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     const eventType = String(body.eventType || "");
 
     if (!VALID_EVENTS.has(eventType)) {
-      return NextResponse.json({ error: "Evento invalido." }, { status: 400 });
+      return NextResponse.json({ error: "Evento inválido." }, { status: 400 });
     }
 
     await prisma.analyticsEvent.create({

@@ -91,7 +91,7 @@ export async function POST(request: Request) {
     const customerDocument = text(customerInput.document);
     const customerAddress = text(customerInput.address);
     if (!customerName || !customerPhone || !customerDocument || !customerAddress) {
-      return NextResponse.json({ error: "Preencha nome, telefone, documento e endereco." }, { status: 400 });
+      return NextResponse.json({ error: "Preencha nome, telefone, documento e endereço." }, { status: 400 });
     }
 
     const couponCode = text(body.couponCode).toUpperCase();
@@ -132,7 +132,7 @@ export async function POST(request: Request) {
       });
 
       if (items.some((item) => item === null)) {
-        throw new CheckoutError("Um ou mais itens do carrinho sao invalidos.");
+        throw new CheckoutError("Um ou mais itens do carrinho são inválidos.");
       }
 
       const validItems = items.filter((item): item is OrderLine => item !== null);
@@ -175,7 +175,7 @@ export async function POST(request: Request) {
           (coupon.combinesWithPromos || !hasPromoItem) &&
           couponApplies(coupon, productSet, categorySet);
 
-        if (!isValid) throw new CheckoutError("Cupom invalido para este carrinho.");
+        if (!isValid) throw new CheckoutError("Cupom inválido para este carrinho.");
 
         if (coupon.discountType === "PERCENT") discount = subtotal * (Number(coupon.value) / 100);
         if (coupon.discountType === "FIXED") discount = Number(coupon.value);

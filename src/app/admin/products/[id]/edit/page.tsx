@@ -35,6 +35,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   const productId = product.id;
   const images = parseJsonList(product.images, ["/post01.jpg"]).join(", ");
   const videos = parseJsonList(product.videos, []).join(", ");
+  const sizes = parseJsonList(product.sizes, []);
   const mainVariant = product.variants[0];
   const variantsText = product.variants
     .map((variant) => {
@@ -76,16 +77,16 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
               </label>
             </div>
             <label className="flex flex-col gap-2">
-              <span className="text-[10px] font-black uppercase tracking-widest text-primary">Descricao</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-primary">Descrição</span>
               <textarea name="description" required rows={5} defaultValue={product.description || ""} className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary resize-none" />
             </label>
             <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-6">
               <label className="flex flex-col gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Preco base</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Preço base</span>
                 <input name="price" required defaultValue={product.price.toString()} className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
               </label>
               <label className="flex flex-col gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Preco promo</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Preço promo</span>
                 <input name="promoPrice" defaultValue={money(product.promoPrice)} className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
               </label>
               <label className="flex flex-col gap-2">
@@ -93,8 +94,8 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
                 <input name="cost" defaultValue={money(product.cost)} className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
               </label>
               <label className="flex flex-col gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Tamanho</span>
-                <input name="mainSize" defaultValue={mainVariant?.size || ""} className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Tamanhos</span>
+                <input name="mainSize" defaultValue={sizes.join(", ") || mainVariant?.size || ""} className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
               </label>
               <label className="flex flex-col gap-2">
                 <span className="text-[10px] font-black uppercase tracking-widest text-primary">Estoque</span>
@@ -115,19 +116,19 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
 
           <div className="bg-surface p-8 rounded-3xl border border-white/5 flex flex-col gap-6 shadow-2xl">
             <h3 className="text-lg font-black uppercase italic tracking-tighter">SEO</h3>
-            <input name="seoTitle" defaultValue={product.seoTitle || ""} placeholder="Titulo SEO" className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
-            <textarea name="seoDescription" rows={3} defaultValue={product.seoDescription || ""} placeholder="Descricao SEO" className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary resize-none" />
+            <input name="seoTitle" defaultValue={product.seoTitle || ""} placeholder="Título SEO" className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
+            <textarea name="seoDescription" rows={3} defaultValue={product.seoDescription || ""} placeholder="Descrição SEO" className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary resize-none" />
           </div>
         </div>
 
         <div className="flex flex-col gap-6">
           <div className="bg-surface p-8 rounded-3xl border border-white/5 flex flex-col gap-6 shadow-2xl">
             <div className="flex flex-col gap-1">
-              <h3 className="text-lg font-black uppercase italic tracking-tighter">Midias</h3>
-              <p className="text-[9px] font-bold uppercase tracking-widest text-white/30">Reordene fotos e videos do produto.</p>
+              <h3 className="text-lg font-black uppercase italic tracking-tighter">Mídias</h3>
+              <p className="text-[9px] font-bold uppercase tracking-widest text-white/30">Reordene fotos e vídeos do produto.</p>
             </div>
             <MediaUploaderField productId={productId} name="images" label="Fotos" initialValue={images} mediaType="IMAGE" accept="image/*" />
-            <MediaUploaderField productId={productId} name="videos" label="Videos" initialValue={videos} mediaType="VIDEO" accept="video/*" />
+            <MediaUploaderField productId={productId} name="videos" label="Vídeos" initialValue={videos} mediaType="VIDEO" accept="video/*" />
           </div>
           <label className="bg-surface p-8 rounded-3xl border border-white/5 flex items-center justify-between shadow-2xl">
             <span className="text-[10px] font-black uppercase tracking-widest text-white">Drop Destaque?</span>

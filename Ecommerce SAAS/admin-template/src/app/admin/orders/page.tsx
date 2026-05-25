@@ -134,7 +134,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
                       <span>Contato: <b className="text-white">{order.customerPhone || order.customerEmail || "-"}</b></span>
                       <span>Doc: <b className="text-white">{order.customerDocument || "-"}</b></span>
                     </div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/35">Endereco: <span className="text-white/70">{order.customerAddress || "-"}</span></p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/35">Endereço: <span className="text-white/70">{order.customerAddress || "-"}</span></p>
                   </div>
                   {items.map((item) => (
                     <div key={`${order.id}-${item.productId}-${item.size}`} className="bg-black/40 border border-white/5 rounded-2xl p-4 flex flex-col gap-1">

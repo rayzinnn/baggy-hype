@@ -17,7 +17,7 @@ export default async function TermsPage() {
         </header>
         <div className="grid gap-4 text-sm leading-relaxed text-white/55">
           <p>O pedido e registrado no site e o fechamento acontece no WhatsApp. A reserva depende da confirmacao de pagamento e da disponibilidade de estoque.</p>
-          <p>Precos, campanhas, cupons e condicoes de entrega podem variar. Quando tiver divergencia, vale o que for confirmado no atendimento.</p>
+          <p>Preços, campanhas, cupons e condições de entrega podem variar. Quando houver divergência, vale o que for confirmado no atendimento.</p>
           <p>Trocas e ajustes sao combinados no WhatsApp, considerando prazo, estado da peca e disponibilidade de tamanho/modelo.</p>
         </div>
       </main>

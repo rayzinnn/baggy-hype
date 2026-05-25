@@ -18,7 +18,7 @@ export default async function ContactPage() {
           <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Atendimento Baggy</span>
           <h1 className="text-6xl font-black uppercase italic leading-[0.85] tracking-tighter md:text-9xl">Fala com a gente</h1>
           <p className="max-w-xl text-sm font-medium leading-relaxed text-white/50 md:text-base">
-            Tamanho, estoque, entrega em Palmas e fechamento do pedido. Tudo no WhatsApp, do jeito mais rapido.
+            Tamanho, estoque, entrega em Palmas e fechamento do pedido. Tudo no WhatsApp, do jeito mais rápido.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Link href={`https://wa.me/${whatsapp}`} className="flex items-center justify-center gap-3 bg-primary px-8 py-5 text-[10px] font-black uppercase tracking-widest text-black transition-transform hover:scale-[1.02]">
@@ -34,7 +34,7 @@ export default async function ContactPage() {
         <section className="grid gap-4">
           {[
             { icon: MapPin, title: "Base local", text: "Palmas - TO. Retirada combinada e entrega urbana." },
-            { icon: Truck, title: "Entrega", text: "Frete gratis em Palmas quando a campanha estiver ativa." },
+            { icon: Truck, title: "Entrega", text: "Frete grátis em Palmas quando a campanha estiver ativa." },
             { icon: MessageCircle, title: "Compra assistida", text: "Registrou no site e fecha no WhatsApp pra confirmar pagamento e disponibilidade." },
           ].map((item) => (
             <div key={item.title} className="border border-white/10 bg-white/[0.03] p-8">

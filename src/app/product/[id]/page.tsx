@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     description: product.seoDescription || product.description || "Streetwear oversized em Palmas - TO. Pedido no site e fechamento no WhatsApp.",
     openGraph: {
       title: product.name,
-      description: product.description || "Produto disponivel em Palmas - TO.",
+      description: product.description || "Produto disponível em Palmas - TO.",
       images: parseJsonList(product.images, ["/post01.jpg"]).slice(0, 1),
     },
   };
@@ -73,7 +73,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     take: 4,
   });
   const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(
-    `Salve Baggy Hype!\n\nVim pelo site e quero: *${product.name}*\nCodigo: ${product.slug || product.id}\nPreco: ${money(salePrice)}\n\nMe ajuda com tamanho e disponibilidade?`
+    `Salve Baggy Hype!\n\nVim pelo site e quero: *${product.name}*\nCódigo: ${product.slug || product.id}\nPreço: ${money(salePrice)}\n\nMe ajuda com tamanho e disponibilidade?`
   )}`;
 
   return (
@@ -83,7 +83,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <main className="flex-1">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-6 text-[10px] font-black uppercase tracking-widest text-white/40 md:px-8">
           <Link href="/catalog" className="flex items-center gap-2 hover:text-white">
-            <ArrowLeft size={12} /> Voltar ao catalogo
+            <ArrowLeft size={12} /> Voltar ao catálogo
           </Link>
           <span>{product.category.name} / {product.slug || product.id.slice(0, 8)}</span>
         </div>
@@ -97,13 +97,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <h1 className="max-w-xl text-5xl font-black uppercase italic leading-[0.88] tracking-tighter md:text-7xl">{product.name}</h1>
               <div className="grid grid-cols-1 gap-4 border-y border-white/10 py-5 sm:grid-cols-2">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Preco</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Preço</p>
                   <p className="text-4xl font-black italic tracking-tighter text-primary">{money(salePrice)}</p>
                   {product.promoPrice && <p className="text-xs font-bold text-white/25 line-through">{money(product.price)}</p>}
                 </div>
                 <div className="flex items-center gap-3 text-white/55">
                   <CreditCard size={22} className="text-primary" />
-                  <p className="text-[10px] font-black uppercase leading-relaxed tracking-widest">Parcelamento e condicoes no atendimento</p>
+                  <p className="text-[10px] font-black uppercase leading-relaxed tracking-widest">Parcelamento e condições no atendimento</p>
                 </div>
               </div>
             </div>
@@ -133,15 +133,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
               className="flex w-full items-center justify-center gap-4 border border-white/20 px-8 py-4 text-[10px] font-black uppercase tracking-widest text-white transition-all hover:border-primary hover:text-primary"
             >
               <Smartphone className="h-4 w-4" />
-              Duvidas de tamanho? Chama no WhatsApp
+              Dúvidas de tamanho? Chama no WhatsApp
             </a>
 
             <div className="grid grid-cols-2 gap-px overflow-hidden border border-white/10 bg-white/10">
               {[
-                { icon: Truck, title: "Frete gratis", text: "Entrega em Palmas quando a campanha estiver ativa." },
+                { icon: Truck, title: "Frete grátis", text: "Entrega em Palmas quando a campanha estiver ativa." },
                 { icon: MapPin, title: "Retirada local", text: "Combine prova ou retirada pelo WhatsApp." },
                 { icon: Ruler, title: "Modelagem", text: "Oversized, conforto amplo e caimento urbano." },
-                { icon: BadgeCheck, title: "Estoque", text: stock > 0 ? `${stock} unidades disponiveis` : "Consulte reposicao" },
+                { icon: BadgeCheck, title: "Estoque", text: stock > 0 ? `${stock} unidades disponíveis` : "Consulte reposição" },
               ].map((item) => (
                 <div key={item.title} className="bg-black p-5">
                   <item.icon className="mb-4 text-primary" size={18} />
@@ -179,9 +179,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         {videos[0] && (
           <section className="mx-auto max-w-5xl px-4 py-16 md:px-8">
-            <h2 className="mb-8 text-center text-3xl font-black uppercase italic tracking-tighter">Video do produto</h2>
+            <h2 className="mb-8 text-center text-3xl font-black uppercase italic tracking-tighter">Vídeo do produto</h2>
             <div className="aspect-video overflow-hidden border border-white/10 bg-white/[0.03]">
-              <iframe src={videos[0]} title={`Video ${product.name}`} className="h-full w-full" allowFullScreen />
+              <iframe src={videos[0]} title={`Vídeo ${product.name}`} className="h-full w-full" allowFullScreen />
             </div>
           </section>
         )}
@@ -207,7 +207,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <div>
               <h2 className="text-2xl font-black uppercase italic tracking-tighter">Aprovado pela banca local</h2>
               <p className="mt-3 text-sm leading-relaxed text-white/50">
-                Avaliacao editorial inicial: caimento amplo, tecido confortavel e atendimento rapido pra acertar o tamanho antes de fechar no WhatsApp.
+                Avaliação editorial inicial: caimento amplo, tecido confortável e atendimento rápido para acertar o tamanho antes de fechar no WhatsApp.
               </p>
             </div>
           </div>

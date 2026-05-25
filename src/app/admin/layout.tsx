@@ -34,7 +34,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Cupons", href: "/admin/coupons", icon: BadgePercent },
     { name: "Pedidos (WA)", href: "/admin/orders", icon: ShoppingBag },
     { name: "Clientes", href: "/admin/customers", icon: Users },
-    { name: "Configuracoes", href: "/admin/settings", icon: Settings },
+    { name: "Configurações", href: "/admin/settings", icon: Settings },
   ];
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);

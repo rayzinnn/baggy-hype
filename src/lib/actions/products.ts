@@ -22,6 +22,15 @@ function parseList(value: string, fallback: string[]) {
   return parsed.length > 0 ? parsed : fallback;
 }
 
+function parseCsvList(value: string, fallback: string[]) {
+  const parsed = value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  return parsed.length > 0 ? parsed : fallback;
+}
+
 function parseMoney(value: string) {
   if (!value.trim()) return null;
   const normalized = value.includes(",") ? value.replace(/\./g, "").replace(",", ".") : value;
@@ -77,15 +86,18 @@ function parseVariants(value: string) {
       return { color, size, stock, price, promoPrice, cost, media };
     })
     .filter((variant) => Object.values(variant).some((value) => value.trim()))
-    .map((variant) => ({
-      color: variant.color || "Unica",
-      size: variant.size || "Unico",
-      stock: Math.max(Number.parseInt(variant.stock, 10) || 0, 0),
-      price: parseMoney(variant.price),
-      promoPrice: parseMoney(variant.promoPrice),
-      cost: parseMoney(variant.cost),
-      media: JSON.stringify(parseList(variant.media, [])),
-    }));
+    .flatMap((variant) => {
+      const sizes = parseCsvList(variant.size, ["Único"]);
+      return sizes.map((size) => ({
+        color: variant.color || "Única",
+        size,
+        stock: Math.max(Number.parseInt(variant.stock, 10) || 0, 0),
+        price: parseMoney(variant.price),
+        promoPrice: parseMoney(variant.promoPrice),
+        cost: parseMoney(variant.cost),
+        media: JSON.stringify(parseList(variant.media, [])),
+      }));
+    });
 }
 
 async function syncVariants(
@@ -99,17 +111,18 @@ async function syncVariants(
   fallbackStock: number
 ) {
   const variants = parseVariants(variantsInput);
+  const fallbackSizes = parseCsvList(fallbackSize, ["Único"]);
 
   if (variants.length === 0) {
-    variants.push({
-      color: "Unica",
-      size: fallbackSize || "Unico",
+    variants.push(...fallbackSizes.map((size) => ({
+      color: "Única",
+      size,
       stock: fallbackStock,
       price: fallbackPrice,
       promoPrice: fallbackPromoPrice,
       cost: fallbackCost,
       media: JSON.stringify(fallbackImages),
-    });
+    })));
   }
 
   await prisma.productVariant.deleteMany({ where: { productId } });
@@ -128,7 +141,7 @@ async function syncVariants(
 }
 
 export async function createProduct(formData: FormData): Promise<ProductActionState | never> {
-  if (!(await requireAdmin())) return { error: "Sessao admin invalida." };
+  if (!(await requireAdmin())) return { error: "Sessão admin inválida." };
 
   try {
     const name = getString(formData, "name");
@@ -137,6 +150,7 @@ export async function createProduct(formData: FormData): Promise<ProductActionSt
     const promoPrice = parseMoney(getString(formData, "promoPrice"));
     const cost = parseMoney(getString(formData, "cost"));
     const mainSize = getString(formData, "mainSize");
+    const sizes = parseCsvList(mainSize, []);
     const mainStock = Math.max(Number.parseInt(getString(formData, "mainStock"), 10) || 0, 0);
     const categoryId = getString(formData, "categoryId");
     const images = parseList(getString(formData, "images"), ["/post01.jpg"]);
@@ -146,7 +160,7 @@ export async function createProduct(formData: FormData): Promise<ProductActionSt
     const slug = getString(formData, "slug") || slugify(name);
     const isFeatured = formData.get("isFeatured") === "on";
 
-    if (!name || price === null || !categoryId) return { error: "Campos obrigatorios faltando." };
+    if (!name || price === null || !categoryId) return { error: "Campos obrigatórios faltando." };
 
     const product = await prisma.product.create({
       data: {
@@ -159,7 +173,7 @@ export async function createProduct(formData: FormData): Promise<ProductActionSt
         categoryId,
         images: JSON.stringify(images),
         videos: JSON.stringify(videos),
-        sizes: JSON.stringify(mainSize ? [mainSize] : []),
+        sizes: JSON.stringify(sizes),
         seoTitle: seoTitle || null,
         seoDescription: seoDescription || null,
         isFeatured,
@@ -180,7 +194,7 @@ export async function createProduct(formData: FormData): Promise<ProductActionSt
 }
 
 export async function updateProduct(productId: string, formData: FormData): Promise<ProductActionState | never> {
-  if (!(await requireAdmin())) return { error: "Sessao admin invalida." };
+  if (!(await requireAdmin())) return { error: "Sessão admin inválida." };
 
   try {
     const name = getString(formData, "name");
@@ -189,6 +203,7 @@ export async function updateProduct(productId: string, formData: FormData): Prom
     const promoPrice = parseMoney(getString(formData, "promoPrice"));
     const cost = parseMoney(getString(formData, "cost"));
     const mainSize = getString(formData, "mainSize");
+    const sizes = parseCsvList(mainSize, []);
     const mainStock = Math.max(Number.parseInt(getString(formData, "mainStock"), 10) || 0, 0);
     const categoryId = getString(formData, "categoryId");
     const images = parseList(getString(formData, "images"), ["/post01.jpg"]);
@@ -198,7 +213,7 @@ export async function updateProduct(productId: string, formData: FormData): Prom
     const slug = getString(formData, "slug") || slugify(name);
     const isFeatured = formData.get("isFeatured") === "on";
 
-    if (!name || price === null || !categoryId) return { error: "Campos obrigatorios faltando." };
+    if (!name || price === null || !categoryId) return { error: "Campos obrigatórios faltando." };
 
     await prisma.product.update({
       where: { id: productId },
@@ -212,7 +227,7 @@ export async function updateProduct(productId: string, formData: FormData): Prom
         categoryId,
         images: JSON.stringify(images),
         videos: JSON.stringify(videos),
-        sizes: JSON.stringify(mainSize ? [mainSize] : []),
+        sizes: JSON.stringify(sizes),
         seoTitle: seoTitle || null,
         seoDescription: seoDescription || null,
         isFeatured,

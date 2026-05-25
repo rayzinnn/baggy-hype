@@ -72,7 +72,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Prom
                 <select name="sort" defaultValue={params.sort || ""} className="h-14 bg-white/5 px-4 text-xs font-bold uppercase tracking-widest text-white outline-none focus:bg-white/10">
                   <option value="">Destaques</option>
                   <option value="new">Mais novos</option>
-                  <option value="price">Menor preco</option>
+                  <option value="price">Menor preço</option>
                 </select>
                 <button className="flex h-14 items-center justify-center gap-2 bg-white px-6 text-[10px] font-black uppercase tracking-widest text-black transition-colors hover:bg-primary">
                   <SlidersHorizontal size={14} />
@@ -98,7 +98,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Prom
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 text-center md:flex-row md:text-left">
             <div className="flex items-center gap-4">
               <Truck size={28} />
-              <h2 className="text-3xl font-black uppercase italic tracking-tighter md:text-5xl">Frete gratis em Palmas</h2>
+              <h2 className="text-3xl font-black uppercase italic tracking-tighter md:text-5xl">Frete grátis em Palmas</h2>
             </div>
             <p className="max-w-sm text-[10px] font-black uppercase leading-relaxed tracking-widest">Registrou no site, fechou no WhatsApp e recebeu no corre local.</p>
           </div>

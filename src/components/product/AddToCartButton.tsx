@@ -33,7 +33,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 
     const sizes = parseJsonList(product.sizes, []);
     const images = parseJsonList(product.images, ["/post01.jpg"]);
-    const hasLegacySizeList = sizes.length > 0 && variants.length === 1 && variants[0]?.color === "Unica" && variants[0]?.size === "Unico";
+    const hasLegacySizeList = sizes.length > 0 && variants.length === 1 && ["Unica", "Única"].includes(variants[0]?.color || "") && ["Unico", "Único"].includes(variants[0]?.size || "");
     const selectableVariants = hasLegacySizeList ? [] : variants;
     const selectedVariant = selectableVariants.find((variant) => variant.id === selectedVariantId);
 

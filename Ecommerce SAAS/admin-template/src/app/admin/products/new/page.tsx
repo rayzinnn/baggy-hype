@@ -18,7 +18,7 @@ export default async function NewProductPage() {
           <div className="flex flex-col gap-2">
             <h2 className="text-2xl font-black uppercase italic tracking-tighter text-white">Cadastre uma categoria primeiro</h2>
             <p className="text-xs font-bold uppercase tracking-widest text-white/35 leading-relaxed">
-              Produtos precisam de categoria para aparecerem corretamente no catalogo e nos filtros.
+              Produtos precisam de categoria para aparecerem corretamente no catálogo e nos filtros.
             </p>
           </div>
           <Link href="/admin/categories" className="px-8 py-4 bg-white text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-primary transition-all">

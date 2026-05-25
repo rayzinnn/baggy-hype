@@ -20,7 +20,7 @@ export default async function CouponsPage({ searchParams }: { searchParams: Prom
     <div className="flex flex-col gap-8 py-4">
       <header className="flex flex-col gap-1">
         <h2 className="text-3xl font-black uppercase italic tracking-tighter text-white">Cupons <span className="text-primary italic">Desconto</span></h2>
-        <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Percentual, valor fixo ou frete gratis</p>
+        <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Percentual, valor fixo ou frete grátis</p>
       </header>
 
       <form action="/admin/coupons" className="bg-surface border border-white/5 rounded-3xl p-3 flex flex-col sm:flex-row gap-3">
@@ -46,7 +46,7 @@ export default async function CouponsPage({ searchParams }: { searchParams: Prom
             <select name="discountType" className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary">
               <option value="PERCENT">Porcentagem</option>
               <option value="FIXED">Valor fixo</option>
-              <option value="FREE_SHIPPING">Frete gratis</option>
+              <option value="FREE_SHIPPING">Frete grátis</option>
             </select>
             <input name="value" placeholder="10 ou 25.00" className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />
             <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/50">
@@ -79,7 +79,7 @@ export default async function CouponsPage({ searchParams }: { searchParams: Prom
           <h3 className="text-xl font-black uppercase italic tracking-tighter text-white">Limites de uso</h3>
           <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/50">
             <input name="combinesWithPromos" type="checkbox" defaultChecked className="accent-primary" />
-            Permitir combinar com preco promocional e outras promocoes
+            Permitir combinar com preço promocional e outras promoções
           </label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input name="usageLimit" placeholder="Limite por cupom" className="bg-black/50 border border-white/10 rounded-2xl py-4 px-6 text-sm text-white outline-none focus:border-primary" />

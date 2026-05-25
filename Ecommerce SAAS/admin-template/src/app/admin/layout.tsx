@@ -34,7 +34,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Cupons", href: "/admin/coupons", icon: BadgePercent },
     { name: "Pedidos (WA)", href: "/admin/orders", icon: ShoppingBag },
     { name: "Clientes", href: "/admin/customers", icon: Users },
-    { name: "Configuracoes", href: "/admin/settings", icon: Settings },
+    { name: "Configurações", href: "/admin/settings", icon: Settings },
   ];
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
@@ -45,7 +45,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="py-2">
           <div className="flex items-center justify-between gap-3">
             <Link href="/" className="text-2xl font-black uppercase italic tracking-tighter text-white">
-              Loja<span className="text-primary italic">Admin</span>
+              Baggy<span className="text-primary italic">Admin</span>
             </Link>
             <ThemeToggle />
           </div>
@@ -85,7 +85,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <header className="md:hidden flex items-center justify-between px-4 py-3 border-b border-white/10 backdrop-blur-md sticky top-0 bg-black/80 z-50">
           <Link href="/" className="text-xl font-black uppercase italic tracking-tighter text-white">
-            Loja<span className="text-primary italic">Admin</span>
+            Baggy<span className="text-primary italic">Admin</span>
           </Link>
           <ThemeToggle />
         </header>

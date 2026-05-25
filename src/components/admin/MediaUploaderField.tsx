@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowDown, ArrowUp, Image as ImageIcon, Loader2, Plus, Trash2, Video } from "lucide-react";
+import { ArrowDown, ArrowUp, Image as ImageIcon, Loader2, Trash2, Video } from "lucide-react";
 import { useMemo, useState } from "react";
 
 type MediaItem = {
@@ -40,6 +40,7 @@ export function MediaUploaderField({
   mediaType,
   commitToDb = true,
   multiple = true,
+  helperText,
 }: {
   productId: string;
   name: string;
@@ -49,9 +50,9 @@ export function MediaUploaderField({
   mediaType: "IMAGE" | "VIDEO";
   commitToDb?: boolean;
   multiple?: boolean;
+  helperText?: string;
 }) {
   const [items, setItems] = useState<MediaItem[]>(() => parseInitial(initialValue).filter((item) => item.type === mediaType));
-  const [draft, setDraft] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const value = useMemo(() => items.map((item) => item.url).join(", "), [items]);
 
@@ -72,7 +73,7 @@ export function MediaUploaderField({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId, url, type: mediaType, sortOrder }),
     });
-    if (!response.ok) throw new Error("Falha ao registrar midia.");
+    if (!response.ok) throw new Error("Falha ao registrar mídia.");
     return (await response.json()) as CommitResponse;
   };
 
@@ -113,7 +114,7 @@ export function MediaUploaderField({
 
       setItems((current) => (multiple ? [...current, ...uploaded] : uploaded.slice(0, 1)));
     } catch (error) {
-      alert(error instanceof Error ? error.message : "Erro ao enviar midia.");
+      alert(error instanceof Error ? error.message : "Erro ao enviar mídia.");
     } finally {
       setIsUploading(false);
     }
@@ -122,8 +123,11 @@ export function MediaUploaderField({
   return (
     <div className="flex flex-col gap-3">
       <input type="hidden" name={name} value={value} />
-      <div className="flex items-center justify-between gap-3">
-        <span className="text-[10px] font-black uppercase tracking-widest text-white/40">{label}</span>
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] font-black uppercase tracking-widest text-white/50">{label}</span>
+          {helperText && <span className="text-[9px] font-bold uppercase tracking-widest text-white/25">{helperText}</span>}
+        </div>
         {isUploading && (
           <span className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-white/40">
             <Loader2 size={14} className="animate-spin" /> Enviando...
@@ -131,34 +135,8 @@ export function MediaUploaderField({
         )}
       </div>
 
-      <div className="flex gap-2">
-        <input
-          value={draft}
-          onChange={(event) => setDraft(event.target.value)}
-          placeholder="Colar URL (opcional)"
-          className="flex-1 bg-black/50 border border-white/10 rounded-2xl py-4 px-4 text-xs text-white outline-none focus:border-primary"
-        />
-        <button
-          type="button"
-          onClick={async () => {
-            const url = draft.trim();
-            if (!url) return;
-            setDraft("");
-            const nextOrder = items.length;
-            try {
-              const committed = await commit(url, nextOrder);
-              const nextItem = { id: committed?.media.id, url, type: mediaType };
-              setItems((current) => (multiple ? [...current, nextItem] : [nextItem]));
-            } catch {
-              alert("Falha ao registrar midia.");
-            }
-          }}
-          className="px-4 bg-white text-black rounded-2xl hover:bg-primary transition-all disabled:opacity-60"
-          disabled={isUploading}
-        >
-          <Plus size={16} />
-        </button>
-        <label className="px-4 bg-white text-black rounded-2xl hover:bg-primary transition-all cursor-pointer inline-flex items-center justify-center disabled:opacity-60">
+      <div className="rounded-3xl border border-white/10 bg-black/30 p-3">
+        <label className="flex min-h-32 cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-6 text-center transition-all hover:border-primary hover:bg-primary/10">
           <input
             type="file"
             accept={accept}
@@ -171,44 +149,57 @@ export function MediaUploaderField({
             }}
             disabled={isUploading}
           />
-          {mediaType === "IMAGE" ? <ImageIcon size={16} /> : <Video size={16} />}
+          <span className="grid h-11 w-11 place-items-center rounded-full bg-white text-black">
+            {isUploading ? <Loader2 size={17} className="animate-spin" /> : mediaType === "IMAGE" ? <ImageIcon size={17} /> : <Video size={17} />}
+          </span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-white/55">
+            {multiple ? "Enviar mídias" : "Enviar mídia"}
+          </span>
+          <span className="text-[9px] font-bold uppercase tracking-widest text-white/25">
+            {mediaType === "IMAGE" ? "Imagens" : "Vídeos"} via upload, sem URL manual
+          </span>
         </label>
-      </div>
 
-      <div className="flex flex-col gap-2">
-        {items.length === 0 ? (
-          <div className="bg-black/40 border border-white/5 rounded-xl p-4 text-[10px] font-bold uppercase tracking-widest text-white/25">
-            Nenhuma midia adicionada.
-          </div>
-        ) : (
-          items.map((item, index) => (
-            <div key={`${item.url}-${index}`} className="bg-black/40 border border-white/5 rounded-xl p-3 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3 min-w-0">
-                {item.type === "IMAGE" ? (
-                  <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-white/10 bg-black shrink-0">
-                    <Image src={item.url} alt="Midia" fill sizes="48px" className="object-cover" />
-                  </div>
-                ) : (
-                  <div className="w-12 h-12 rounded-lg overflow-hidden border border-white/10 bg-black shrink-0 flex items-center justify-center text-white/40">
-                    <Video size={18} />
-                  </div>
-                )}
-                <span className="text-[10px] font-mono text-white/60 truncate">{index + 1}. {item.url}</span>
-              </div>
-              <div className="flex gap-2 shrink-0">
-                <button type="button" onClick={() => move(index, -1)} className="p-2 bg-white/5 rounded-lg"><ArrowUp size={12} /></button>
-                <button type="button" onClick={() => move(index, 1)} className="p-2 bg-white/5 rounded-lg"><ArrowDown size={12} /></button>
-                <button
-                  type="button"
-                  onClick={() => setItems((current) => current.filter((_, itemIndex) => itemIndex !== index))}
-                  className="p-2 bg-white/5 rounded-lg hover:bg-red-500"
-                >
-                  <Trash2 size={12} />
-                </button>
-              </div>
+        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {items.length === 0 ? (
+            <div className="col-span-full rounded-2xl border border-white/5 bg-black/40 p-5 text-center text-[10px] font-bold uppercase tracking-widest text-white/25">
+              Nenhuma mídia adicionada.
             </div>
-          ))
-        )}
+          ) : (
+            items.map((item, index) => (
+              <div key={`${item.url}-${index}`} className="group overflow-hidden rounded-2xl border border-white/10 bg-black/60">
+                <div className="relative aspect-[4/5] bg-black">
+                  {item.type === "IMAGE" ? (
+                    <Image src={item.url} alt={`Mídia ${index + 1}`} fill sizes="160px" className="object-cover" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-white/40">
+                      <Video size={28} />
+                    </div>
+                  )}
+                  <div className="absolute left-2 top-2 rounded-full bg-primary px-2 py-1 text-[9px] font-black text-black">
+                    {String(index + 1).padStart(2, "0")}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between gap-1 p-2">
+                  <button type="button" onClick={() => move(index, -1)} disabled={index === 0} className="grid h-9 w-9 place-items-center rounded-xl bg-white/5 text-white/60 transition-all hover:bg-white/10 disabled:opacity-25" aria-label="Mover mídia para cima">
+                    <ArrowUp size={13} />
+                  </button>
+                  <button type="button" onClick={() => move(index, 1)} disabled={index === items.length - 1} className="grid h-9 w-9 place-items-center rounded-xl bg-white/5 text-white/60 transition-all hover:bg-white/10 disabled:opacity-25" aria-label="Mover mídia para baixo">
+                    <ArrowDown size={13} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setItems((current) => current.filter((_, itemIndex) => itemIndex !== index))}
+                    className="grid h-9 w-9 place-items-center rounded-xl bg-white/5 text-white/60 transition-all hover:bg-red-500 hover:text-white"
+                    aria-label="Remover mídia"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

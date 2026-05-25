@@ -1,5 +1,5 @@
 import { updateSiteConfig } from "@/lib/actions/site-config";
-import { MediaUploaderField } from "@/components/admin/MediaUploaderField";
+import { HomeBannerManager } from "@/components/admin/HomeBannerManager";
 import { Image as ImageIcon, Layout, Save, Smartphone } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 
@@ -9,13 +9,19 @@ export default async function SettingsPage() {
   const config = await prisma.siteConfig.findUnique({
     where: { id: "singleton" },
   }) || {
-    topBannerText: "FRETE GRATIS EM PALMAS - TO / ENTREGA LOCAL",
+    topBannerText: "FRETE GRÁTIS EM PALMAS - TO / ENTREGA LOCAL",
     whatsappNumber: "5563999999999",
     isBannerVisible: true,
     heroImage1: "/post01.jpg",
     heroImage2: "/post01.jpg",
     heroImage3: "/post01.jpg",
-    heroCtaLabel: "Ver catalogo",
+    heroMobileImage1: "/post01.jpg",
+    heroMobileImage2: "/post01.jpg",
+    heroMobileImage3: "/post01.jpg",
+    heroLinkHref1: "/catalog",
+    heroLinkHref2: "/catalog",
+    heroLinkHref3: "/catalog",
+    heroCtaLabel: "Ver catálogo",
     heroCtaHref: "/catalog",
     heroSecondaryLabel: "Falar no WhatsApp",
     heroSecondaryHref: "/contact",
@@ -25,8 +31,8 @@ export default async function SettingsPage() {
   return (
     <div className="flex flex-col gap-8 py-4">
       <header className="flex flex-col gap-1">
-        <h2 className="text-3xl font-black uppercase italic tracking-tighter text-white">
-          Configuracoes <span className="text-primary italic">do site</span>
+          <h2 className="text-3xl font-black uppercase italic tracking-tighter text-white">
+          Configurações <span className="text-primary italic">do site</span>
         </h2>
         <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Banner, WhatsApp e imagens da home</p>
       </header>
@@ -35,7 +41,7 @@ export default async function SettingsPage() {
         <div className="bg-surface p-5 md:p-8 rounded-3xl border border-white/5 shadow-2xl flex flex-col gap-6">
           <div className="flex items-center gap-3 mb-2">
             <Layout className="text-primary" size={20} />
-            <h3 className="text-sm font-black uppercase tracking-widest italic text-white">Visual & Banners</h3>
+            <h3 className="text-sm font-black uppercase tracking-widest italic text-white">Visual & banners</h3>
           </div>
 
           <label className="flex flex-col gap-2">
@@ -45,22 +51,22 @@ export default async function SettingsPage() {
               rows={3}
               defaultValue={config.topBannerText}
               className="w-full bg-black border border-white/10 rounded-2xl py-4 px-6 text-sm text-white focus:border-primary outline-none transition-all resize-none"
-              placeholder="Ex: FRETE GRATIS PARA PALMAS..."
+              placeholder="Ex: FRETE GRÁTIS PARA PALMAS..."
             />
           </label>
 
           <label className="flex items-center gap-3 p-4 bg-black/50 rounded-2xl border border-white/5">
             <input name="isBannerVisible" type="checkbox" defaultChecked={config.isBannerVisible} className="w-4 h-4 accent-primary" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-white/60 cursor-pointer">Banner visivel no site</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-white/60 cursor-pointer">Banner visível no site</span>
           </label>
 
           <div className="flex items-center gap-3 mt-4 mb-2">
             <Smartphone className="text-primary" size={20} />
-            <h3 className="text-sm font-black uppercase tracking-widest italic text-white">Contato de Vendas</h3>
+            <h3 className="text-sm font-black uppercase tracking-widest italic text-white">Contato de vendas</h3>
           </div>
 
           <label className="flex flex-col gap-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-white/40 px-1">Numero WhatsApp (com DDI/DDD)</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-white/40 px-1">Número WhatsApp (com DDI/DDD)</span>
             <input
               name="whatsappNumber"
               type="text"
@@ -75,16 +81,16 @@ export default async function SettingsPage() {
           <div className="bg-surface p-5 md:p-8 rounded-3xl border border-white/5 shadow-2xl flex flex-col gap-6">
             <div className="flex items-center gap-3 mb-2">
               <ImageIcon className="text-primary" size={20} />
-              <h3 className="text-sm font-black uppercase tracking-widest italic text-white">Hero da home</h3>
+              <h3 className="text-sm font-black uppercase tracking-widest italic text-white">Banners da hero</h3>
             </div>
 
-            {[
-              ["heroImage1", "Banner principal", config.heroImage1],
-              ["heroImage2", "Banner alternativo 1", config.heroImage2],
-              ["heroImage3", "Banner alternativo 2", config.heroImage3],
-            ].map(([name, label, value]) => (
-              <MediaUploaderField key={name} productId="" name={name} label={label} initialValue={value} mediaType="IMAGE" accept="image/*" commitToDb={false} multiple={false} />
-            ))}
+            <HomeBannerManager
+              initialBanners={[
+                { desktop: config.heroImage1, mobile: config.heroMobileImage1, href: config.heroLinkHref1 || config.heroLinkHref },
+                { desktop: config.heroImage2, mobile: config.heroMobileImage2, href: config.heroLinkHref2 || config.heroLinkHref },
+                { desktop: config.heroImage3, mobile: config.heroMobileImage3, href: config.heroLinkHref3 || config.heroLinkHref },
+              ]}
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
               <label className="flex flex-col gap-2">
@@ -96,16 +102,12 @@ export default async function SettingsPage() {
                 <input name="heroCtaHref" defaultValue={config.heroCtaHref} className="w-full bg-black border border-white/10 rounded-2xl py-4 px-6 text-sm text-white focus:border-primary outline-none transition-all" />
               </label>
               <label className="flex flex-col gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-white/40 px-1">Texto CTA secundario</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-white/40 px-1">Texto CTA secundário</span>
                 <input name="heroSecondaryLabel" defaultValue={config.heroSecondaryLabel} className="w-full bg-black border border-white/10 rounded-2xl py-4 px-6 text-sm text-white focus:border-primary outline-none transition-all" />
               </label>
               <label className="flex flex-col gap-2">
                 <span className="text-[10px] font-black uppercase tracking-widest text-white/40 px-1">URL CTA secundario</span>
                 <input name="heroSecondaryHref" defaultValue={config.heroSecondaryHref} className="w-full bg-black border border-white/10 rounded-2xl py-4 px-6 text-sm text-white focus:border-primary outline-none transition-all" />
-              </label>
-              <label className="md:col-span-2 flex flex-col gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-white/40 px-1">URL ao clicar no banner</span>
-                <input name="heroLinkHref" defaultValue={config.heroLinkHref} className="w-full bg-black border border-white/10 rounded-2xl py-4 px-6 text-sm text-white focus:border-primary outline-none transition-all" />
               </label>
             </div>
           </div>
@@ -114,7 +116,7 @@ export default async function SettingsPage() {
             type="submit"
             className="w-full bg-white text-black font-black uppercase text-xs tracking-widest py-6 rounded-2xl hover:bg-primary transition-all flex items-center justify-center gap-3 shadow-2xl hover:scale-[1.01] active:scale-95 duration-200"
           >
-            Salvar configuracoes
+            Salvar configurações
             <Save size={16} strokeWidth={3} />
           </button>
         </div>

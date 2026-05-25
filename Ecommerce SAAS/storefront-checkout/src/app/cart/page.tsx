@@ -17,8 +17,22 @@ export default function CartPage() {
     email: "",
     phone: "",
     document: "",
-    address: "",
+    cep: "",
+    street: "",
+    number: "",
+    complement: "",
+    district: "",
+    city: "",
+    state: "",
   });
+
+  const address = [
+    customer.street && `${customer.street}, ${customer.number || "s/n"}`,
+    customer.complement && `Complemento: ${customer.complement}`,
+    customer.district && `Bairro: ${customer.district}`,
+    (customer.city || customer.state) && `${customer.city}/${customer.state}`,
+    customer.cep && `CEP: ${customer.cep}`,
+  ].filter(Boolean).join(" - ");
 
   const handleCheckout = async () => {
     if (items.length === 0) return;
@@ -28,7 +42,7 @@ export default function CartPage() {
       const response = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items, customer, couponCode }),
+        body: JSON.stringify({ items, customer: { ...customer, address }, couponCode }),
       });
       const data = (await response.json()) as { whatsappUrl?: string; error?: string };
 
@@ -93,7 +107,7 @@ export default function CartPage() {
                       </div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-white/40">
                         {item.color && <span>Cor: <span className="text-white italic">{item.color}</span> | </span>}
-                        Tamanho: <span className="text-white italic">{item.size || "Unico"}</span>
+                        Tamanho: <span className="text-white italic">{item.size || "Único"}</span>
                       </p>
                     </div>
 
@@ -120,9 +134,9 @@ export default function CartPage() {
               ))}
               <button
                 onClick={clearCart}
-                className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 hover:text-red-500 transition-colors self-start mt-4"
+                className="self-start mt-4 rounded-full border border-red-500/30 bg-red-500/10 px-5 py-3 text-[10px] font-black uppercase tracking-[0.25em] text-red-200 transition-all hover:border-red-500 hover:bg-red-500 hover:text-white"
               >
-                Limpar Carrinho
+                Limpar carrinho
               </button>
             </div>
 
@@ -138,7 +152,15 @@ export default function CartPage() {
                     <input value={customer.email} onChange={(event) => setCustomer((prev) => ({ ...prev, email: event.target.value }))} placeholder="E-mail" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary" />
                     <input value={customer.phone} onChange={(event) => setCustomer((prev) => ({ ...prev, phone: event.target.value }))} placeholder="WhatsApp" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary" />
                     <input value={customer.document} onChange={(event) => setCustomer((prev) => ({ ...prev, document: event.target.value }))} placeholder="CPF ou CNPJ" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary" />
-                    <textarea value={customer.address} onChange={(event) => setCustomer((prev) => ({ ...prev, address: event.target.value }))} placeholder="Endereco para entrega" rows={3} className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary resize-none" />
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      <input value={customer.cep} onChange={(event) => setCustomer((prev) => ({ ...prev, cep: event.target.value }))} placeholder="CEP" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary" />
+                      <input value={customer.state} onChange={(event) => setCustomer((prev) => ({ ...prev, state: event.target.value.toUpperCase().slice(0, 2) }))} placeholder="Estado (UF)" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary uppercase" />
+                      <input value={customer.city} onChange={(event) => setCustomer((prev) => ({ ...prev, city: event.target.value }))} placeholder="Cidade" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary" />
+                      <input value={customer.district} onChange={(event) => setCustomer((prev) => ({ ...prev, district: event.target.value }))} placeholder="Bairro" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary" />
+                      <input value={customer.street} onChange={(event) => setCustomer((prev) => ({ ...prev, street: event.target.value }))} placeholder="Rua / avenida" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary sm:col-span-2" />
+                      <input value={customer.number} onChange={(event) => setCustomer((prev) => ({ ...prev, number: event.target.value }))} placeholder="Número" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary" />
+                      <input value={customer.complement} onChange={(event) => setCustomer((prev) => ({ ...prev, complement: event.target.value }))} placeholder="Complemento" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary" />
+                    </div>
                     <input value={couponCode} onChange={(event) => setCouponCode(event.target.value.toUpperCase())} placeholder="Cupom (opcional)" className="bg-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-primary uppercase" />
                   </div>
                   <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">

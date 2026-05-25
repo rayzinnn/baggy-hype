@@ -40,7 +40,7 @@ export const Footer = () => {
              <li className="flex gap-3">
                 <Truck className="w-5 h-5 text-white/40 shrink-0" />
                 <div className="flex flex-col gap-1">
-                   <span className="text-[10px] font-black uppercase text-white">Frete gratis em Palmas</span>
+                   <span className="text-[10px] font-black uppercase text-white">Frete grátis em Palmas</span>
                    <p className="text-[10px] text-muted-foreground lowercase">Entrega local quando a campanha estiver ativa.</p>
                 </div>
              </li>
@@ -58,9 +58,9 @@ export const Footer = () => {
         <div className="flex flex-col gap-6">
           <h4 className="font-black uppercase text-xs tracking-widest text-primary">Suporte</h4>
           <p className="text-[10px] text-white/40 uppercase font-black tracking-widest leading-loose">
-             Duvidas? <br/>
+             Dúvidas? <br/>
              Pedido no site e fechamento no WhatsApp <br/>
-             Segunda a Sabado / 09:00 as 19:00
+             Segunda a sábado / 09:00 às 19:00
           </p>
           <Link href="/contact" className="w-fit px-6 py-3 bg-white/5 border border-white/10 text-white font-black uppercase text-[10px] tracking-widest rounded-full hover:bg-white hover:text-black transition-all">
              Central de Ajuda

@@ -23,30 +23,37 @@ export default async function Home() {
     <div className="flex-1 w-full bg-black flex flex-col overflow-x-hidden selection:bg-primary/40 selection:text-white">
       <Navbar
         banner={{
-          text: config?.topBannerText || "FRETE GRATIS EM PALMAS - TO / ENTREGA LOCAL",
+          text: config?.topBannerText || "FRETE GRÁTIS EM PALMAS - TO / ENTREGA LOCAL",
           visible: config?.isBannerVisible ?? true,
         }}
       />
 
       <section className="relative min-h-[72vh] md:min-h-[82vh] overflow-hidden border-b border-white/10">
-        <Link href={config?.heroLinkHref || "/catalog"} className="absolute inset-0 block" aria-label="Abrir campanha principal">
+        <Link href={config?.heroLinkHref1 || config?.heroLinkHref || "/catalog"} className="absolute inset-0 block" aria-label="Abrir campanha principal">
           <Image
             src={config?.heroImage1 || "/post01.jpg"}
             alt="Banner principal Baggy Hype"
             fill
             sizes="100vw"
             priority
-            className="object-cover"
+            className="hidden object-cover md:block"
           />
-          <span className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black via-black/40 to-transparent" />
+          <Image
+            src={config?.heroMobileImage1 || config?.heroImage1 || "/post01.jpg"}
+            alt="Banner principal Baggy Hype mobile"
+            fill
+            sizes="100vw"
+            priority
+            className="object-cover md:hidden"
+          />
         </Link>
-        <div className="pointer-events-none absolute inset-x-0 bottom-8 z-10 px-4 md:px-8">
-          <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row">
+        <div className="pointer-events-none absolute bottom-8 left-4 z-10 md:left-14">
+          <div className="flex flex-col gap-3 sm:flex-row">
             <Link
               href={config?.heroCtaHref || "/catalog"}
               className="pointer-events-auto px-8 py-4 bg-white text-black font-black uppercase text-[10px] tracking-widest hover:bg-primary transition-all flex items-center justify-center gap-2 group border border-white"
             >
-              {config?.heroCtaLabel || "Ver catalogo"}
+              {config?.heroCtaLabel || "Ver catálogo"}
               <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
@@ -95,7 +102,7 @@ export default async function Home() {
         <div className="flex items-end justify-between mb-20 border-l-4 border-primary pl-6">
           <div className="flex flex-col gap-2">
             <h2 className="text-6xl md:text-8xl font-black uppercase italic tracking-tighter leading-none text-white">
-              Lancamentos <span className="text-primary italic">em destaque</span>
+              Lançamentos <span className="text-primary italic">em destaque</span>
             </h2>
             <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.3em]">Vitrine / fit / conforto</p>
           </div>

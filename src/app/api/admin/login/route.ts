@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   ].filter(Boolean);
 
   if (!url || !anonKey) {
-    return NextResponse.json({ error: "Configuracao ausente.", missing }, { status: 500 });
+    return NextResponse.json({ error: "Configuração ausente.", missing }, { status: 500 });
   }
 
   const supabase = createClient(url, anonKey, {
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error || !data.session) {
-    return NextResponse.json({ error: "Credenciais invalidas." }, { status: 401 });
+    return NextResponse.json({ error: "Credenciais inválidas." }, { status: 401 });
   }
   if (!(await isAdminEmail(data.user.email))) {
     return NextResponse.json({ error: "Usuario sem permissao de admin." }, { status: 403 });
