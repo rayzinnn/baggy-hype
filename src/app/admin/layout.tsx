@@ -56,6 +56,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link
               key={item.name}
               href={item.href}
+              prefetch={false}
               className={cn(
                 "flex items-center gap-3 px-4 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all",
                 isActive(item.href) ? "bg-primary text-black shadow-lg shadow-primary/10" : "text-white/45 hover:text-white hover:bg-white/5"
@@ -100,6 +101,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.name}
                 href={item.href}
+                prefetch={false}
                 className={cn(
                   "h-14 min-w-20 rounded-2xl flex flex-col items-center justify-center gap-1 text-[8px] font-black uppercase tracking-tight transition-all",
                   isActive(item.href) ? "bg-primary text-black" : "text-white/45"

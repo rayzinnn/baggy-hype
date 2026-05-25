@@ -71,7 +71,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     whatsapp: "Cliques WhatsApp",
     sales: "Vendas",
     revenue: "Faturamento",
-    conversion: "Conversao",
+    conversion: "Conversão",
   };
   const selectedMetric = metricLabels[metric] ? metric : "revenue";
   const days = buildDays(range.from, range.to);
@@ -113,9 +113,9 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const stats = [
     { name: "Carrinhos", value: cartEvents.length, hint: `${abandonedCarts} sem checkout`, icon: ShoppingCart, color: "text-blue-400" },
     { name: "Cliques WhatsApp", value: whatsappEvents.length, hint: "checkout iniciado", icon: MousePointerClick, color: "text-primary" },
-    { name: "Vendas pagas", value: paidOrders.length, hint: `${pendingOrders.length} intencoes abertas`, icon: CheckCircle2, color: "text-green-500" },
+    { name: "Vendas pagas", value: paidOrders.length, hint: `${pendingOrders.length} intenções abertas`, icon: CheckCircle2, color: "text-green-500" },
     { name: "Faturamento", value: formatCurrency(revenue), hint: `ticket ${formatCurrency(averageTicket)}`, icon: DollarSign, color: "text-green-400" },
-    { name: "Conversao WA", value: `${conversion.toFixed(1)}%`, hint: "vendas / cliques", icon: TrendingUp, color: "text-white dark:text-white" },
+    { name: "Conversão WA", value: `${conversion.toFixed(1)}%`, hint: "vendas / cliques", icon: TrendingUp, color: "text-white dark:text-white" },
     { name: "Pendentes", value: pendingOrders.length, hint: "sem pagamento confirmado", icon: Clock3, color: "text-orange-300" },
   ];
 
@@ -148,7 +148,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h3 className="text-xl font-black uppercase italic tracking-tighter">Performance</h3>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-white/30">{metricLabels[selectedMetric]} no periodo selecionado</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-white/30">{metricLabels[selectedMetric]} no período selecionado</p>
           </div>
           <form action="/admin/dashboard" className="flex flex-wrap gap-2">
             <input type="hidden" name="from" value={range.fromValue} />
@@ -161,14 +161,14 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
           </form>
         </div>
         <div className="overflow-x-auto">
-          <div className="relative min-w-[760px] h-[340px] rounded-[1.75rem] bg-black/80 dark:bg-black/25 border border-black/10 dark:border-white/5 px-5 py-5">
-            <svg viewBox="0 0 760 260" className="h-full w-full" role="img" aria-label={`Grafico de ${metricLabels[selectedMetric]}`}>
+          <div className="relative min-w-[760px] h-[340px] rounded-[1.75rem] bg-black/[0.04] dark:bg-black/25 border border-black/10 dark:border-white/5 px-5 py-5">
+            <svg viewBox="0 0 760 260" className="h-full w-full text-black/55 dark:text-white/70" role="img" aria-label={`Gráfico de ${metricLabels[selectedMetric]}`}>
               {[0, 1, 2, 3].map((tick) => {
                 const y = 214 - tick * 62;
                 return (
                   <g key={tick}>
-                    <line x1="26" y1={y} x2="734" y2={y} stroke="rgba(255,255,255,0.12)" />
-                    <text x="0" y={y + 4} fill="rgba(255,255,255,0.7)" fontSize="10" fontWeight="700">{formatShortValue((maxChartValue / 3) * tick, selectedMetric)}</text>
+                    <line x1="26" y1={y} x2="734" y2={y} stroke="currentColor" opacity="0.14" />
+                    <text x="0" y={y + 4} fill="currentColor" fontSize="10" fontWeight="800">{formatShortValue((maxChartValue / 3) * tick, selectedMetric)}</text>
                   </g>
                 );
               })}
@@ -179,7 +179,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                   <stop offset="100%" stopColor="#facc15" stopOpacity="0" />
                 </linearGradient>
               </defs>
-              {secondaryPath && <path d={secondaryPath} fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="5 7" />}
+              {secondaryPath && <path d={secondaryPath} fill="none" stroke="currentColor" opacity="0.32" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="5 7" />}
               {primaryPath && <path d={primaryPath} fill="none" stroke="#facc15" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />}
               {displayValues.map((value, index) => {
                 const x = displayValues.length === 1 ? 380 : 26 + (index / (displayValues.length - 1)) * 708;
@@ -194,7 +194,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               {chartData.map(([date], index) => {
                 if (chartData.length > 12 && index % Math.ceil(chartData.length / 8) !== 0 && index !== chartData.length - 1) return null;
                 const x = chartData.length === 1 ? 380 : 26 + (index / (chartData.length - 1)) * 708;
-                return <text key={date} x={x} y="248" textAnchor="middle" fill="rgba(255,255,255,0.82)" fontSize="10" fontWeight="800">{date.slice(5)}</text>;
+                return <text key={date} x={x} y="248" textAnchor="middle" fill="currentColor" fontSize="10" fontWeight="900">{date.slice(5)}</text>;
               })}
             </svg>
             <div className="absolute left-1/2 top-11 -translate-x-1/2 rounded-2xl bg-white text-black px-5 py-4 shadow-2xl min-w-48">

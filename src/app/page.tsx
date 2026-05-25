@@ -99,10 +99,10 @@ export default async function Home() {
       </section>
 
       <section className="py-24 px-4 md:px-8 max-w-7xl mx-auto w-full" id="drops">
-        <div className="flex items-end justify-between mb-20 border-l-4 border-primary pl-6">
+        <div className="flex items-end justify-between mb-14 overflow-hidden border-l-4 border-primary pl-4 md:mb-20 md:pl-6">
           <div className="flex flex-col gap-2">
-            <h2 className="text-6xl md:text-8xl font-black uppercase italic tracking-tighter leading-none text-white">
-              Lançamentos <span className="text-primary italic">em destaque</span>
+            <h2 className="max-w-full text-[2.35rem] font-black uppercase italic tracking-tighter leading-[0.9] text-white sm:text-6xl md:text-8xl">
+              Lançamentos <span className="block text-primary italic md:inline">em destaque</span>
             </h2>
             <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.3em]">Vitrine / fit / conforto</p>
           </div>
@@ -162,7 +162,7 @@ export default async function Home() {
         </div>
         <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 text-black">
           <h2 className="text-4xl md:text-6xl font-black uppercase italic tracking-tighter leading-[0.9] text-center md:text-left">
-            PALMAS - TO <br /> <span className="opacity-70">ENTREGA GRATIS</span>
+            PALMAS - TO <br /> <span className="opacity-70">ENTREGA GRÁTIS</span>
           </h2>
           <div className="flex flex-col items-center md:items-end gap-2 text-center md:text-right">
             <p className="text-[10px] font-black uppercase tracking-widest max-w-xs leading-relaxed">
